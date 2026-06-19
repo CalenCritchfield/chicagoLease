@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chicago Property Map</title>
+    <title>IL Scattered Site Property Map</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
@@ -18,7 +18,6 @@
         margin: 0;
         padding: 0;
       }
-
       body {
         font-family: "Inter", "Segoe UI", sans-serif;
         background: #0f1117;
@@ -33,43 +32,48 @@
       header {
         display: flex;
         align-items: center;
-        gap: 14px;
-        padding: 12px 20px;
+        gap: 12px;
+        padding: 10px 18px;
         background: #161922;
         border-bottom: 1px solid #2a2d38;
         flex-shrink: 0;
       }
       .logo {
-        width: 30px;
-        height: 30px;
+        width: 28px;
+        height: 28px;
         background: #2563eb;
-        border-radius: 8px;
+        border-radius: 7px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 16px;
+        font-size: 15px;
       }
       header h1 {
-        font-size: 15px;
-        font-weight: 600;
+        font-size: 14px;
+        font-weight: 700;
         color: #f0f2f8;
+      }
+      header .subtitle {
+        font-size: 11px;
+        color: #6b7280;
+        margin-left: 6px;
       }
       .header-stats {
         margin-left: auto;
         display: flex;
-        gap: 18px;
+        gap: 16px;
       }
       .stat {
         text-align: right;
       }
       .stat-val {
-        font-size: 18px;
+        font-size: 17px;
         font-weight: 700;
         color: #60a5fa;
         line-height: 1;
       }
       .stat-lbl {
-        font-size: 10px;
+        font-size: 9px;
         color: #6b7280;
         text-transform: uppercase;
         letter-spacing: 0.08em;
@@ -84,7 +88,7 @@
 
       /* SIDEBAR */
       .sidebar {
-        width: 340px;
+        width: 380px;
         flex-shrink: 0;
         background: #161922;
         border-right: 1px solid #2a2d38;
@@ -93,7 +97,7 @@
         overflow: hidden;
       }
 
-      /* TABS (CSV / Add / Search) */
+      /* MODE TABS */
       .mode-tabs {
         display: flex;
         border-bottom: 1px solid #2a2d38;
@@ -101,20 +105,20 @@
       }
       .mode-tab {
         flex: 1;
-        padding: 10px 6px;
+        padding: 9px 4px;
         text-align: center;
-        font-size: 11px;
+        font-size: 10px;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.06em;
+        letter-spacing: 0.05em;
         cursor: pointer;
         color: #6b7280;
         border-bottom: 2px solid transparent;
-        transition: all 0.15s;
         background: none;
         border-top: none;
         border-left: none;
         border-right: none;
+        transition: all 0.15s;
       }
       .mode-tab.active {
         color: #60a5fa;
@@ -124,21 +128,22 @@
       /* PANELS */
       .panel {
         display: none;
-        padding: 14px;
+        padding: 12px;
         flex-direction: column;
-        gap: 10px;
-        overflow-y: auto;
+        gap: 9px;
         flex-shrink: 0;
+        overflow-y: auto;
+        max-height: 300px;
       }
       .panel.active {
         display: flex;
       }
 
-      /* Upload zone */
+      /* Upload */
       .upload-zone {
         border: 2px dashed #2a2d38;
         border-radius: 10px;
-        padding: 16px;
+        padding: 14px;
         text-align: center;
         cursor: pointer;
         transition:
@@ -155,7 +160,7 @@
         display: none;
       }
       .upload-icon {
-        font-size: 22px;
+        font-size: 20px;
         margin-bottom: 4px;
       }
       .upload-zone p {
@@ -167,37 +172,7 @@
         color: #60a5fa;
       }
 
-      /* Column mapper */
-      .mapper {
-        display: none;
-        flex-direction: column;
-        gap: 7px;
-      }
-      .mapper.visible {
-        display: flex;
-      }
-      .mapper label {
-        font-size: 10px;
-        color: #9ca3af;
-        text-transform: uppercase;
-        letter-spacing: 0.07em;
-      }
-      .mapper select {
-        width: 100%;
-        padding: 7px 10px;
-        background: #0f1117;
-        border: 1px solid #2a2d38;
-        border-radius: 6px;
-        color: #e8eaf0;
-        font-size: 12px;
-        margin-top: 2px;
-      }
-      .mapper-row {
-        display: flex;
-        flex-direction: column;
-      }
-
-      /* Shared input style */
+      /* Field */
       .field-label {
         font-size: 10px;
         color: #9ca3af;
@@ -208,12 +183,12 @@
       }
       .field-input {
         width: 100%;
-        padding: 8px 10px;
+        padding: 7px 10px;
         background: #0f1117;
         border: 1px solid #2a2d38;
         border-radius: 7px;
         color: #e8eaf0;
-        font-size: 13px;
+        font-size: 12px;
         transition: border-color 0.15s;
       }
       .field-input:focus {
@@ -225,7 +200,7 @@
       }
       textarea.field-input {
         resize: vertical;
-        min-height: 60px;
+        min-height: 52px;
       }
 
       /* Buttons */
@@ -249,7 +224,6 @@
         color: #6b7280;
         cursor: not-allowed;
       }
-
       .btn-secondary {
         width: 100%;
         padding: 9px;
@@ -270,15 +244,15 @@
       .addr-results {
         display: flex;
         flex-direction: column;
-        gap: 6px;
+        gap: 5px;
       }
       .addr-result-item {
-        padding: 8px 10px;
+        padding: 7px 10px;
         background: #0f1117;
         border: 1px solid #2a2d38;
         border-radius: 7px;
         cursor: pointer;
-        font-size: 12px;
+        font-size: 11px;
         color: #9ca3af;
         transition: all 0.15s;
       }
@@ -290,19 +264,20 @@
       .addr-result-name {
         font-weight: 600;
         color: #e8eaf0;
-        font-size: 13px;
-        margin-bottom: 2px;
+        font-size: 12px;
+        margin-bottom: 1px;
       }
 
       /* Filter tabs */
       .filter-tabs {
         display: flex;
         gap: 5px;
-        padding: 10px 14px 0;
+        padding: 8px 12px 0;
         flex-shrink: 0;
+        flex-wrap: wrap;
       }
       .tab {
-        padding: 4px 10px;
+        padding: 3px 9px;
         border-radius: 20px;
         font-size: 10px;
         font-weight: 600;
@@ -312,7 +287,7 @@
         color: #6b7280;
         transition: all 0.15s;
         text-transform: uppercase;
-        letter-spacing: 0.06em;
+        letter-spacing: 0.05em;
       }
       .tab.active {
         background: #2563eb;
@@ -322,13 +297,13 @@
 
       /* List search */
       .search-wrap {
-        padding: 10px 14px;
+        padding: 8px 12px;
         border-bottom: 1px solid #2a2d38;
         flex-shrink: 0;
       }
       .search-wrap input {
         width: 100%;
-        padding: 7px 12px;
+        padding: 7px 11px;
         background: #0f1117;
         border: 1px solid #2a2d38;
         border-radius: 8px;
@@ -347,7 +322,7 @@
       .prop-list {
         flex: 1;
         overflow-y: auto;
-        padding: 6px 0;
+        padding: 4px 0;
       }
       .prop-list::-webkit-scrollbar {
         width: 4px;
@@ -357,8 +332,20 @@
         border-radius: 4px;
       }
 
+      .zone-header {
+        padding: 5px 12px;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #f59e0b;
+        background: #1a1810;
+        border-left: 3px solid #f59e0b;
+        margin-top: 4px;
+      }
+
       .prop-item {
-        padding: 9px 14px;
+        padding: 8px 12px;
         cursor: pointer;
         border-left: 3px solid transparent;
         transition:
@@ -374,33 +361,47 @@
         border-left-color: #2563eb;
       }
       .prop-name {
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 600;
         color: #f0f2f8;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
-      .prop-addr {
-        font-size: 11px;
+      .prop-unit {
+        font-size: 10px;
         color: #6b7280;
-        margin-top: 2px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        margin-top: 1px;
       }
-      .prop-price {
+      .prop-meta {
+        display: flex;
+        gap: 8px;
+        margin-top: 3px;
+        flex-wrap: wrap;
+      }
+      .prop-rent {
         font-size: 11px;
         color: #34d399;
-        margin-top: 2px;
         font-weight: 600;
+      }
+      .prop-bed {
+        font-size: 10px;
+        color: #9ca3af;
+      }
+      .prop-sqft {
+        font-size: 10px;
+        color: #9ca3af;
+      }
+      .prop-status {
+        font-size: 10px;
+        color: #f59e0b;
       }
       .prop-badge {
         display: inline-block;
         font-size: 9px;
         text-transform: uppercase;
-        letter-spacing: 0.08em;
-        padding: 2px 5px;
+        letter-spacing: 0.07em;
+        padding: 1px 5px;
         border-radius: 4px;
         margin-top: 3px;
         font-weight: 700;
@@ -420,31 +421,28 @@
 
       .prop-delete {
         position: absolute;
-        right: 10px;
+        right: 8px;
         top: 50%;
         transform: translateY(-50%);
         background: none;
         border: none;
         color: #4b5563;
         cursor: pointer;
-        font-size: 14px;
+        font-size: 13px;
         padding: 2px 5px;
         border-radius: 4px;
-        transition:
-          color 0.15s,
-          background 0.15s;
         display: none;
+        transition: color 0.15s;
       }
       .prop-item:hover .prop-delete {
         display: block;
       }
       .prop-delete:hover {
         color: #f87171;
-        background: #2a1f1f;
       }
 
       .empty-state {
-        padding: 36px 20px;
+        padding: 30px 16px;
         text-align: center;
         color: #4b5563;
         font-size: 12px;
@@ -464,6 +462,7 @@
         border: 1px solid #2a2d38;
         border-radius: 10px;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        min-width: 220px;
       }
       .leaflet-popup-tip {
         background: #1e2130;
@@ -471,41 +470,49 @@
       .leaflet-popup-content {
         margin: 12px 14px;
         font-size: 12px;
-        line-height: 1.6;
+        line-height: 1.7;
       }
       .popup-name {
         font-size: 14px;
         font-weight: 700;
         color: #60a5fa;
-        margin-bottom: 5px;
+        margin-bottom: 6px;
       }
       .popup-row {
         color: #9ca3af;
+        margin-bottom: 1px;
       }
       .popup-row strong {
         color: #e8eaf0;
       }
-      .popup-price {
+      .popup-rent {
         color: #34d399;
         font-weight: 700;
-        font-size: 13px;
-        margin-top: 5px;
+        font-size: 14px;
+        margin: 5px 0;
+      }
+      .popup-amenities {
+        font-size: 11px;
+        color: #6b7280;
+        margin-top: 4px;
+        font-style: italic;
       }
 
       /* Toast */
       .toast {
         position: fixed;
-        bottom: 20px;
-        right: 20px;
+        bottom: 18px;
+        right: 18px;
         background: #1e2130;
         border: 1px solid #2a2d38;
-        padding: 10px 16px;
+        padding: 10px 15px;
         border-radius: 10px;
-        font-size: 13px;
+        font-size: 12px;
         color: #e8eaf0;
         display: none;
         z-index: 9999;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        max-width: 300px;
       }
       .toast.show {
         display: block;
@@ -522,7 +529,7 @@
         }
       }
 
-      /* Modal for editing */
+      /* Edit modal */
       .modal-bg {
         display: none;
         position: fixed;
@@ -539,15 +546,15 @@
         background: #1e2130;
         border: 1px solid #2a2d38;
         border-radius: 14px;
-        padding: 22px;
-        width: 340px;
+        padding: 20px;
+        width: 320px;
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 10px;
         box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
       }
       .modal h3 {
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 700;
         color: #f0f2f8;
       }
@@ -556,23 +563,50 @@
         gap: 8px;
         margin-top: 4px;
       }
-      .modal-actions .btn-primary {
-        flex: 1;
-      }
+      .modal-actions .btn-primary,
       .modal-actions .btn-secondary {
         flex: 1;
       }
       .divider {
         border: none;
         border-top: 1px solid #2a2d38;
-        margin: 2px 0;
+      }
+
+      /* Progress bar */
+      .progress-wrap {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .progress-wrap.visible {
+        display: flex;
+      }
+      .progress-bar-bg {
+        background: #2a2d38;
+        border-radius: 4px;
+        height: 4px;
+        overflow: hidden;
+      }
+      .progress-bar-fill {
+        height: 100%;
+        background: #2563eb;
+        border-radius: 4px;
+        transition: width 0.3s;
+      }
+      .progress-label {
+        font-size: 10px;
+        color: #6b7280;
+        text-align: center;
       }
     </style>
   </head>
   <body>
     <header>
       <div class="logo">🏙</div>
-      <h1>Chicago Property Map</h1>
+      <div>
+        <h1>IL Scattered Site Property Map</h1>
+        <span class="subtitle">Chicago Scattered All Zones</span>
+      </div>
       <div class="header-stats">
         <div class="stat">
           <div class="stat-val" id="stat-total">0</div>
@@ -583,23 +617,26 @@
           <div class="stat-lbl">In Chicago</div>
         </div>
         <div class="stat">
-          <div class="stat-val" id="stat-other">0</div>
-          <div class="stat-lbl">Outside</div>
+          <div class="stat-val" id="stat-vacant">0</div>
+          <div class="stat-lbl">Vacant</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val" id="stat-zones">0</div>
+          <div class="stat-lbl">Zones</div>
         </div>
       </div>
     </header>
 
     <div class="app-body">
       <div class="sidebar">
-        <!-- Mode tabs -->
         <div class="mode-tabs">
           <button class="mode-tab active" onclick="switchMode('csv', this)">
-            📂 CSV Upload
+            📂 Upload CSV
           </button>
           <button class="mode-tab" onclick="switchMode('add', this)">
             ➕ Add Property
           </button>
-          <button class="mode-tab" onclick="switchMode('search', this)">
+          <button class="mode-tab" onclick="switchMode('find', this)">
             🔍 Find Address
           </button>
         </div>
@@ -609,70 +646,82 @@
           <div class="upload-zone" id="uploadZone">
             <input type="file" id="csvFile" accept=".csv" />
             <div class="upload-icon">📂</div>
-            <p>Drop CSV here or <strong>click to browse</strong></p>
+            <p>
+              Drop your <strong>IL Scattered Site</strong> CSV here<br />or
+              <strong>click to browse</strong>
+            </p>
           </div>
-          <div class="mapper" id="mapper">
-            <div class="mapper-row">
-              <label>Address column <span style="color: #f87171">*</span></label
-              ><select id="colAddress"></select>
+          <div class="progress-wrap" id="progressWrap">
+            <div class="progress-bar-bg">
+              <div
+                class="progress-bar-fill"
+                id="progressBar"
+                style="width: 0%"
+              ></div>
             </div>
-            <div class="mapper-row">
-              <label>Property name column</label
-              ><select id="colName"></select>
-            </div>
-            <div class="mapper-row">
-              <label>Price / value column</label
-              ><select id="colPrice"></select>
-            </div>
-            <div class="mapper-row">
-              <label>Other details column</label
-              ><select id="colOther"></select>
-            </div>
+            <div class="progress-label" id="progressLabel">Starting…</div>
           </div>
           <button
             class="btn-primary"
             id="mapBtn"
             style="display: none"
-            onclick="processProperties()"
+            onclick="processCSV()"
           >
-            📍 Map Properties
+            📍 Map All Properties
           </button>
         </div>
 
-        <!-- ADD PROPERTY PANEL -->
+        <!-- ADD PANEL -->
         <div class="panel" id="panel-add">
           <div>
-            <label class="field-label">Property Name</label>
-            <input
-              class="field-input"
-              id="addName"
-              placeholder="e.g. Lincoln Park Condo"
-            />
-          </div>
-          <div>
             <label class="field-label"
-              >Address <span style="color: #f87171">*</span></label
+              >Property Name / Address
+              <span style="color: #f87171">*</span></label
             >
             <input
               class="field-input"
               id="addAddress"
-              placeholder="e.g. 123 N Michigan Ave, Chicago, IL"
+              placeholder="e.g. 7406 S Perry Ave, Chicago, IL"
             />
           </div>
           <div>
-            <label class="field-label">Price / Value</label>
+            <label class="field-label">Unit</label>
+            <input class="field-input" id="addUnit" placeholder="e.g. 129-1" />
+          </div>
+          <div>
+            <label class="field-label">Unit Type</label>
             <input
               class="field-input"
-              id="addPrice"
-              placeholder="e.g. $450,000"
+              id="addType"
+              placeholder="e.g. 2 Bedroom 1 Bath Apartment"
             />
           </div>
           <div>
-            <label class="field-label">Other Details</label>
+            <label class="field-label">Market Rent</label>
+            <input class="field-input" id="addRent" placeholder="e.g. $1,310" />
+          </div>
+          <div>
+            <label class="field-label">Bed/Bath</label>
+            <input class="field-input" id="addBed" placeholder="e.g. 2/1.00" />
+          </div>
+          <div>
+            <label class="field-label">Sqft</label>
+            <input class="field-input" id="addSqft" placeholder="e.g. 738" />
+          </div>
+          <div>
+            <label class="field-label">Unit Status</label>
+            <input
+              class="field-input"
+              id="addStatus"
+              placeholder="e.g. Vacant-Unrented"
+            />
+          </div>
+          <div>
+            <label class="field-label">Unit Amenities</label>
             <textarea
               class="field-input"
-              id="addOther"
-              placeholder="Beds, baths, notes…"
+              id="addAmenities"
+              placeholder="e.g. Hardwood floors, 1st floor…"
             ></textarea>
           </div>
           <button class="btn-primary" id="addBtn" onclick="addManualProperty()">
@@ -680,14 +729,14 @@
           </button>
         </div>
 
-        <!-- FIND ADDRESS PANEL -->
-        <div class="panel" id="panel-search">
+        <!-- FIND PANEL -->
+        <div class="panel" id="panel-find">
           <div>
-            <label class="field-label">Search any address</label>
+            <label class="field-label">Search any address or landmark</label>
             <input
               class="field-input"
               id="addrSearchInput"
-              placeholder="e.g. Wrigley Field, Chicago"
+              placeholder="e.g. 7155 S Green, Chicago"
               onkeydown="if (event.key === 'Enter') searchAddress();"
             />
           </div>
@@ -701,7 +750,7 @@
           <div class="addr-results" id="addrResults"></div>
         </div>
 
-        <!-- Filter tabs -->
+        <!-- Filters -->
         <div class="filter-tabs">
           <button class="tab active" onclick="setFilter('all', this)">
             All
@@ -709,8 +758,8 @@
           <button class="tab" onclick="setFilter('chicago', this)">
             Chicago
           </button>
-          <button class="tab" onclick="setFilter('other', this)">
-            Outside
+          <button class="tab" onclick="setFilter('vacant', this)">
+            Vacant
           </button>
           <button class="tab" onclick="setFilter('manual', this)">Added</button>
         </div>
@@ -720,7 +769,7 @@
           <input
             type="text"
             id="searchBox"
-            placeholder="Search properties…"
+            placeholder="Search by address, unit, rent, status…"
             oninput="renderList()"
           />
         </div>
@@ -728,7 +777,7 @@
         <!-- Property list -->
         <div class="prop-list" id="propList">
           <div class="empty-state">
-            Upload a CSV or add a property<br />to get started.
+            Upload your IL Scattered Site CSV<br />or add a property manually.
           </div>
         </div>
       </div>
@@ -741,25 +790,29 @@
       <div class="modal">
         <h3>Edit Property</h3>
         <div>
-          <label class="field-label">Property Name</label>
-          <input class="field-input" id="editName" />
+          <label class="field-label">Address</label
+          ><input class="field-input" id="editAddress" />
         </div>
         <div>
-          <label class="field-label">Address</label>
-          <input class="field-input" id="editAddress" />
+          <label class="field-label">Unit</label
+          ><input class="field-input" id="editUnit" />
         </div>
         <div>
-          <label class="field-label">Price / Value</label>
-          <input class="field-input" id="editPrice" />
+          <label class="field-label">Market Rent</label
+          ><input class="field-input" id="editRent" />
         </div>
         <div>
-          <label class="field-label">Other Details</label>
-          <textarea class="field-input" id="editOther"></textarea>
+          <label class="field-label">Unit Status</label
+          ><input class="field-input" id="editStatus" />
+        </div>
+        <div>
+          <label class="field-label">Amenities</label
+          ><textarea class="field-input" id="editAmenities"></textarea>
         </div>
         <hr class="divider" />
         <div class="modal-actions">
           <button class="btn-secondary" onclick="closeEdit()">Cancel</button>
-          <button class="btn-primary" onclick="saveEdit()">Save Changes</button>
+          <button class="btn-primary" onclick="saveEdit()">Save</button>
         </div>
       </div>
     </div>
@@ -769,12 +822,11 @@
     <script>
       // ── State ──
       let allProperties = [];
-      let markerObjects = []; // parallel array: markerObjects[i] = leaflet marker or null
+      let markerObjects = [];
       let map,
         activeFilter = "all",
         activeIndex = -1;
-      let csvHeaders = [],
-        pendingRows = [];
+      let pendingRows = [];
       let editingIndex = -1;
 
       // ── Map ──
@@ -791,19 +843,17 @@
         },
       ).addTo(map);
 
-      function makeIcon(color) {
+      function makeIcon(p) {
+        const color = p.manual ? "#34d399" : p.inCity ? "#3b82f6" : "#f87171";
+        const isVacant = (p.status || "").toLowerCase().includes("vacant");
+        const size = isVacant ? 16 : 12;
         return L.divIcon({
           className: "",
-          html: `<div style="width:14px;height:14px;border-radius:50%;background:${color};border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.5)"></div>`,
-          iconSize: [14, 14],
-          iconAnchor: [7, 7],
-          popupAnchor: [0, -10],
+          html: `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.5);${isVacant ? "box-shadow:0 0 8px " + color + ",0 2px 8px rgba(0,0,0,.5)" : ""}"></div>`,
+          iconSize: [size, size],
+          iconAnchor: [size / 2, size / 2],
+          popupAnchor: [0, -size / 2],
         });
-      }
-
-      function propColor(p) {
-        if (p.manual) return "#34d399";
-        return p.inCity ? "#3b82f6" : "#f87171";
       }
 
       // ── Mode tabs ──
@@ -840,66 +890,129 @@
 
       function handleFile(file) {
         Papa.parse(file, {
-          header: true,
-          skipEmptyLines: true,
+          header: false,
+          skipEmptyLines: false,
           complete: (result) => {
-            csvHeaders = result.meta.fields || [];
-            pendingRows = result.data;
-            if (!csvHeaders.length) {
-              showToast("CSV appears empty.");
+            const rows = result.data;
+            // Find the header row: look for a row containing "Property Name"
+            let headerRowIdx = -1;
+            for (let i = 0; i < rows.length; i++) {
+              if (
+                rows[i].some(
+                  (cell) =>
+                    String(cell).trim().toLowerCase() === "property name",
+                )
+              ) {
+                headerRowIdx = i;
+                break;
+              }
+            }
+            if (headerRowIdx === -1) {
+              showToast(
+                'Could not find the "Property Name" header row. Please use the exported IL Scattered Site CSV.',
+              );
               return;
             }
-            populateMapper();
-            document.getElementById("mapper").classList.add("visible");
-            document.getElementById("mapBtn").style.display = "block";
+            const headers = rows[headerRowIdx].map((h) => String(h).trim());
+            const dataRows = rows
+              .slice(headerRowIdx + 1)
+              .filter((r) => r.some((c) => String(c).trim()));
+
+            // Map columns A-I (indices 0-8)
+            const colMap = {
+              propertyName: findCol(headers, ["property name"]),
+              unit: findCol(headers, ["unit"]),
+              unitType: findCol(headers, ["unit type"]),
+              marketRent: findCol(headers, ["market rent"]),
+              rentReady: findCol(headers, ["rent ready"]),
+              bedBath: findCol(headers, ["bed/bath", "bed bath", "bedroom"]),
+              sqft: findCol(headers, ["sqft", "sq ft", "square"]),
+              unitStatus: findCol(headers, ["unit status", "status"]),
+              amenities: findCol(headers, ["unit amenities", "amenities"]),
+            };
+
+            // Filter: skip rows that are zone labels (e.g. "Zone 1") or empty property names
+            pendingRows = dataRows
+              .map((r) => {
+                const name = String(r[colMap.propertyName] || "").trim();
+                return {
+                  name,
+                  unit: r[colMap.unit] || "",
+                  type: r[colMap.unitType] || "",
+                  rent: r[colMap.marketRent] || "",
+                  rentReady: r[colMap.rentReady] || "",
+                  bedBath: r[colMap.bedBath] || "",
+                  sqft: r[colMap.sqft] || "",
+                  status: r[colMap.unitStatus] || "",
+                  amenities: r[colMap.amenities] || "",
+                  zone: "",
+                };
+              })
+              .filter((r) => r.name && !/^zone\s*\d/i.test(r.name));
+
+            // Detect zones from data: rows where name looks like "Zone N"
+            let currentZone = "";
+            pendingRows = [];
+            dataRows.forEach((r) => {
+              const name = String(r[colMap.propertyName] || "").trim();
+              if (/^zone\s*\d+/i.test(name)) {
+                currentZone = name;
+                return;
+              }
+              if (!name) return;
+              pendingRows.push({
+                name,
+                unit: String(r[colMap.unit] || "").trim(),
+                type: String(r[colMap.unitType] || "").trim(),
+                rent: String(r[colMap.marketRent] || "").trim(),
+                rentReady: String(r[colMap.rentReady] || "").trim(),
+                bedBath: String(r[colMap.bedBath] || "").trim(),
+                sqft: String(r[colMap.sqft] || "").trim(),
+                status: String(r[colMap.unitStatus] || "").trim(),
+                amenities: String(r[colMap.amenities] || "").trim(),
+                zone: currentZone,
+              });
+            });
+
             zone.querySelector("p").innerHTML =
-              `<strong>${file.name}</strong> — ${pendingRows.length} rows`;
+              `<strong>${file.name}</strong><br/>${pendingRows.length} units found`;
+            document.getElementById("mapBtn").style.display = "block";
             showToast(
-              `Loaded ${pendingRows.length} rows. Confirm columns then click "Map Properties".`,
+              `Loaded ${pendingRows.length} units across ${new Set(pendingRows.map((r) => r.zone)).size} zones. Click "Map All Properties".`,
             );
           },
-          error: () => showToast("Could not parse file."),
+          error: () =>
+            showToast("Could not parse file. Make sure it is a valid CSV."),
         });
       }
 
-      function populateMapper() {
-        const ids = ["colAddress", "colName", "colPrice", "colOther"];
-        const labels = ["address", "name", "price", "other"];
-        ids.forEach((id, i) => {
-          const sel = document.getElementById(id);
-          sel.innerHTML =
-            `<option value="">— not mapped —</option>` +
-            csvHeaders
-              .map((h) => {
-                const l = h.toLowerCase();
-                const guess =
-                  l.includes(labels[i]) ||
-                  (i === 0 && l.includes("addr")) ||
-                  (i === 1 &&
-                    (l.includes("name") ||
-                      l.includes("title") ||
-                      l.includes("property"))) ||
-                  (i === 2 &&
-                    (l.includes("price") ||
-                      l.includes("value") ||
-                      l.includes("amount")));
-                return `<option value="${h}"${guess ? " selected" : ""}>${h}</option>`;
-              })
-              .join("");
-        });
+      function findCol(headers, keywords) {
+        for (let k of keywords) {
+          const idx = headers.findIndex((h) => h.toLowerCase().includes(k));
+          if (idx !== -1) return idx;
+        }
+        return -1;
       }
 
-      // ── Geocode (Nominatim) ──
+      // ── Geocode ──
       async function geocode(address) {
         try {
+          // Append Chicago IL to help Nominatim
+          const q = address.toLowerCase().includes("chicago")
+            ? address
+            : address + ", Chicago, IL";
           const res = await fetch(
-            `https://nominatim.openstreetmap.org/search?format=json&limit=5&q=${encodeURIComponent(address)}`,
+            `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)}`,
             { headers: { "Accept-Language": "en" } },
           );
-          return await res.json();
-        } catch (e) {
-          return [];
-        }
+          const data = await res.json();
+          if (data && data[0])
+            return {
+              lat: parseFloat(data[0].lat),
+              lng: parseFloat(data[0].lon),
+            };
+        } catch (e) {}
+        return null;
       }
 
       function isInChicago(lat, lng) {
@@ -909,65 +1022,64 @@
       }
 
       // ── Process CSV ──
-      async function processProperties() {
-        const colAddr = document.getElementById("colAddress").value;
-        const colName = document.getElementById("colName").value;
-        const colPrice = document.getElementById("colPrice").value;
-        const colOther = document.getElementById("colOther").value;
-        if (!colAddr) {
-          showToast("Please select the Address column.");
+      async function processCSV() {
+        if (!pendingRows.length) {
+          showToast("No data loaded yet.");
           return;
         }
-
         const btn = document.getElementById("mapBtn");
         btn.disabled = true;
-        btn.textContent = "⏳ Geocoding…";
+        btn.textContent = "⏳ Mapping…";
+        const pw = document.getElementById("progressWrap");
+        pw.classList.add("visible");
 
-        // Remove CSV-sourced markers only (keep manual ones)
-        const keepProps = allProperties.filter((p) => p.manual);
-        const keepMarkers = keepProps.map((p) => markerObjects[p.index]);
+        // Keep manual props; remove CSV-sourced
+        const manualProps = allProperties.filter((p) => p.manual);
+        const manualMrks = manualProps.map((p) => markerObjects[p.index]);
         allProperties
           .filter((p) => !p.manual)
           .forEach((p) => {
             if (markerObjects[p.index]) map.removeLayer(markerObjects[p.index]);
           });
-        allProperties = keepProps;
+        allProperties = manualProps;
         markerObjects = [];
-
-        // Re-index kept manual props
-        allProperties.forEach((p, i) => {
+        manualProps.forEach((p, i) => {
           p.index = i;
-          markerObjects[i] = keepMarkers[i];
+          markerObjects[i] = manualMrks[i];
         });
+
+        // Dedupe by property name (group units under same address)
+        const addrCache = {};
 
         for (let i = 0; i < pendingRows.length; i++) {
           const row = pendingRows[i];
-          const rawAddr = (row[colAddr] || "").trim();
-          if (!rawAddr) continue;
-          btn.textContent = `⏳ ${i + 1} / ${pendingRows.length}`;
-          const results = await geocode(rawAddr);
-          await new Promise((r) => setTimeout(r, 350));
-          const geo = results[0]
-            ? {
-                lat: parseFloat(results[0].lat),
-                lng: parseFloat(results[0].lon),
-              }
-            : null;
+          const pct = Math.round((i / pendingRows.length) * 100);
+          document.getElementById("progressBar").style.width = pct + "%";
+          document.getElementById("progressLabel").textContent =
+            `${i + 1} / ${pendingRows.length} — ${row.name}`;
+
+          let geo = addrCache[row.name];
+          if (geo === undefined) {
+            geo = await geocode(row.name);
+            addrCache[row.name] = geo;
+            await new Promise((r) => setTimeout(r, 350));
+          }
+
           const inCity = geo ? isInChicago(geo.lat, geo.lng) : false;
           const prop = {
-            name: colName ? row[colName] || rawAddr : rawAddr,
-            address: rawAddr,
-            price: colPrice ? row[colPrice] || "" : "",
-            other: colOther ? row[colOther] || "" : "",
+            ...row,
             geo,
             inCity,
             manual: false,
             index: allProperties.length,
           };
           allProperties.push(prop);
-          const marker = addMarker(prop);
-          markerObjects.push(marker);
+          markerObjects.push(addMarker(prop));
         }
+
+        document.getElementById("progressBar").style.width = "100%";
+        document.getElementById("progressLabel").textContent = "Done!";
+        setTimeout(() => pw.classList.remove("visible"), 2000);
 
         updateStats();
         renderList();
@@ -975,27 +1087,23 @@
         btn.disabled = false;
         btn.textContent = "🔄 Re-map Properties";
         showToast(
-          `Done! ${allProperties.filter((p) => p.inCity).length} properties in Chicago.`,
+          `Mapped ${allProperties.filter((p) => p.inCity).length} units in Chicago. ${allProperties.filter((p) => !p.geo).length} could not be geocoded.`,
         );
       }
 
-      // ── Add manual property ──
+      // ── Add manual ──
       async function addManualProperty() {
         const address = document.getElementById("addAddress").value.trim();
         if (!address) {
-          showToast("Please enter an address.");
+          showToast("Address is required.");
           return;
         }
         const btn = document.getElementById("addBtn");
         btn.disabled = true;
         btn.textContent = "⏳ Looking up…";
-
-        const results = await geocode(address);
-        const geo = results[0]
-          ? { lat: parseFloat(results[0].lat), lng: parseFloat(results[0].lon) }
-          : null;
+        const geo = await geocode(address);
         if (!geo) {
-          showToast("Could not find that address. Try adding a city or ZIP.");
+          showToast("Could not find that address.");
           btn.disabled = false;
           btn.textContent = "📍 Add to Map";
           return;
@@ -1003,103 +1111,114 @@
 
         const inCity = isInChicago(geo.lat, geo.lng);
         const prop = {
-          name: document.getElementById("addName").value.trim() || address,
-          address,
-          price: document.getElementById("addPrice").value.trim(),
-          other: document.getElementById("addOther").value.trim(),
+          name: address,
+          unit: document.getElementById("addUnit").value.trim(),
+          type: document.getElementById("addType").value.trim(),
+          rent: document.getElementById("addRent").value.trim(),
+          rentReady: "",
+          bedBath: document.getElementById("addBed").value.trim(),
+          sqft: document.getElementById("addSqft").value.trim(),
+          status: document.getElementById("addStatus").value.trim(),
+          amenities: document.getElementById("addAmenities").value.trim(),
+          zone: "Manually Added",
           geo,
           inCity,
           manual: true,
           index: allProperties.length,
         };
         allProperties.push(prop);
-        const marker = addMarker(prop);
-        markerObjects.push(marker);
-
-        // zoom to it
+        markerObjects.push(addMarker(prop));
         map.setView([geo.lat, geo.lng], 15);
-        marker && marker.openPopup();
-
-        // clear form
-        ["addName", "addAddress", "addPrice", "addOther"].forEach(
-          (id) => (document.getElementById(id).value = ""),
-        );
+        markerObjects[prop.index] && markerObjects[prop.index].openPopup();
+        [
+          "addAddress",
+          "addUnit",
+          "addType",
+          "addRent",
+          "addBed",
+          "addSqft",
+          "addStatus",
+          "addAmenities",
+        ].forEach((id) => (document.getElementById(id).value = ""));
         btn.disabled = false;
         btn.textContent = "📍 Add to Map";
         updateStats();
         renderList();
         showToast(
-          `"${prop.name}" added — ${inCity ? "in Chicago ✓" : "outside Chicago"}`,
+          `Added "${prop.name}" — ${inCity ? "✓ In Chicago" : "Outside Chicago"}`,
         );
       }
 
-      // ── Find Address (search panel) ──
+      // ── Find address ──
       async function searchAddress() {
         const q = document.getElementById("addrSearchInput").value.trim();
         if (!q) return;
         const btn = document.getElementById("addrSearchBtn");
         btn.disabled = true;
         btn.textContent = "⏳ Searching…";
-        const results = await geocode(q);
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=json&limit=5&q=${encodeURIComponent(q + ", Chicago, IL")}`,
+            { headers: { "Accept-Language": "en" } },
+          );
+          const results = await res.json();
+          const container = document.getElementById("addrResults");
+          if (!results.length) {
+            container.innerHTML =
+              '<div style="font-size:11px;color:#6b7280">No results found.</div>';
+          } else {
+            container.innerHTML = results
+              .slice(0, 5)
+              .map((r) => {
+                const lat = parseFloat(r.lat),
+                  lng = parseFloat(r.lon),
+                  inCity = isInChicago(lat, lng);
+                return `<div class="addr-result-item" onclick="jumpToResult(${lat},${lng},'${escJs(r.display_name)}')">
+          <div class="addr-result-name">${escHtml(r.display_name.split(",")[0])}</div>
+          <div style="font-size:10px;margin-top:1px">${escHtml(r.display_name.split(",").slice(1, 3).join(",").trim())}
+            ${inCity ? '<span style="color:#60a5fa;margin-left:5px">✓ Chicago</span>' : ""}
+          </div>
+        </div>`;
+              })
+              .join("");
+          }
+        } catch (e) {
+          showToast("Search failed.");
+        }
         btn.disabled = false;
         btn.textContent = "🔍 Search";
-
-        const container = document.getElementById("addrResults");
-        if (!results.length) {
-          container.innerHTML =
-            '<div style="font-size:12px;color:#6b7280">No results found.</div>';
-          return;
-        }
-
-        container.innerHTML = results
-          .slice(0, 5)
-          .map((r, i) => {
-            const lat = parseFloat(r.lat),
-              lng = parseFloat(r.lon);
-            const inCity = isInChicago(lat, lng);
-            return `<div class="addr-result-item" onclick="jumpToResult(${lat},${lng},'${escJs(r.display_name)}')">
-      <div class="addr-result-name">${escHtml(r.display_name.split(",")[0])}</div>
-      <div style="font-size:11px;margin-top:2px">${escHtml(r.display_name.split(",").slice(1, 3).join(",").trim())}
-        ${inCity ? '<span style="color:#60a5fa;margin-left:6px">✓ Chicago</span>' : ""}
-      </div>
-    </div>`;
-          })
-          .join("");
       }
 
       function jumpToResult(lat, lng, displayName) {
         map.setView([lat, lng], 16);
-        L.popup({ className: "search-popup" })
+        L.popup()
           .setLatLng([lat, lng])
           .setContent(
-            `<div class="popup-name">📍 Found</div><div class="popup-row">${escHtml(displayName)}</div>
+            `<div class="popup-name">📍 ${escHtml(displayName.split(",")[0])}</div>
+      <div class="popup-row" style="font-size:11px">${escHtml(displayName)}</div>
       <div style="margin-top:8px">
-        <button onclick="addFromSearch(${lat},${lng},'${escJs(displayName)}')" style="padding:5px 10px;background:#2563eb;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer">Add as Property</button>
+        <button onclick="prefillAdd('${escJs(displayName)}')" style="padding:5px 10px;background:#2563eb;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer">Add as Property</button>
       </div>`,
           )
           .openOn(map);
       }
 
-      function addFromSearch(lat, lng, displayName) {
+      function prefillAdd(displayName) {
         map.closePopup();
-        // Pre-fill the Add panel
-        const shortName = displayName.split(",")[0];
-        document.getElementById("addName").value = shortName;
         document.getElementById("addAddress").value = displayName
           .split(",")
           .slice(0, 3)
           .join(",")
           .trim();
         switchMode("add", document.querySelectorAll(".mode-tab")[1]);
-        showToast('Address pre-filled — add details and click "Add to Map"');
+        showToast("Address pre-filled in Add Property tab.");
       }
 
-      // ── Marker helpers ──
+      // ── Marker ──
       function addMarker(prop) {
         if (!prop.geo) return null;
-        const color = propColor(prop);
         const marker = L.marker([prop.geo.lat, prop.geo.lng], {
-          icon: makeIcon(color),
+          icon: makeIcon(prop),
         })
           .addTo(map)
           .bindPopup(() => makePopup(prop));
@@ -1109,27 +1228,25 @@
 
       function makePopup(p) {
         return `<div class="popup-name">${escHtml(p.name)}</div>
-    <div class="popup-row"><strong>Address:</strong> ${escHtml(p.address)}</div>
-    ${p.price ? `<div class="popup-price">${escHtml(p.price)}</div>` : ""}
-    ${p.other ? `<div class="popup-row" style="margin-top:4px;color:#9ca3af">${escHtml(p.other)}</div>` : ""}
-    ${
-      p.geo
-        ? `<div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
-      <a href="https://www.google.com/maps/search/?api=1&query=${p.geo.lat},${p.geo.lng}" target="_blank"
-         style="color:#60a5fa;font-size:11px;text-decoration:none">📍 Google Maps</a>
-      <a href="https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${p.geo.lat},${p.geo.lng}" target="_blank"
-         style="color:#60a5fa;font-size:11px;text-decoration:none">🚶 Street View</a>
+    ${p.unit ? `<div class="popup-row"><strong>Unit:</strong> ${escHtml(p.unit)}${p.type ? " — " + escHtml(p.type) : ""}</div>` : ""}
+    ${p.rent ? `<div class="popup-rent">${escHtml(p.rent)}/mo</div>` : ""}
+    ${p.bedBath ? `<div class="popup-row"><strong>Bed/Bath:</strong> ${escHtml(p.bedBath)}</div>` : ""}
+    ${p.sqft ? `<div class="popup-row"><strong>Sqft:</strong> ${escHtml(p.sqft)}</div>` : ""}
+    ${p.status ? `<div class="popup-row"><strong>Status:</strong> <span style="color:${(p.status || "").toLowerCase().includes("vacant") ? "#f59e0b" : "#34d399"}">${escHtml(p.status)}</span></div>` : ""}
+    ${p.zone ? `<div class="popup-row"><strong>Zone:</strong> ${escHtml(p.zone)}</div>` : ""}
+    ${p.amenities ? `<div class="popup-amenities">${escHtml(p.amenities)}</div>` : ""}
+    <div style="margin-top:8px;display:flex;gap:10px;flex-wrap:wrap">
+      <a href="https://www.google.com/maps/search/?api=1&query=${p.geo.lat},${p.geo.lng}" target="_blank" style="color:#60a5fa;font-size:11px;text-decoration:none">📍 Google Maps</a>
+      <a href="https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${p.geo.lat},${p.geo.lng}" target="_blank" style="color:#60a5fa;font-size:11px;text-decoration:none">🚶 Street View</a>
       ${p.manual ? `<span onclick="openEdit(${p.index})" style="color:#34d399;font-size:11px;cursor:pointer">✏️ Edit</span>` : ""}
-    </div>`
-        : '<div style="color:#f87171;margin-top:4px;font-size:11px">⚠ Could not geocode</div>'
-    }`;
+    </div>`;
       }
 
       function fitChicago() {
         const pts = allProperties
           .filter((p) => p.inCity && p.geo)
           .map((p) => [p.geo.lat, p.geo.lng]);
-        if (pts.length) map.fitBounds(L.latLngBounds(pts).pad(0.1));
+        if (pts.length) map.fitBounds(L.latLngBounds(pts).pad(0.08));
       }
 
       // ── Stats ──
@@ -1138,11 +1255,16 @@
           allProperties.length;
         document.getElementById("stat-chicago").textContent =
           allProperties.filter((p) => p.inCity).length;
-        document.getElementById("stat-other").textContent =
-          allProperties.filter((p) => !p.inCity).length;
+        document.getElementById("stat-vacant").textContent =
+          allProperties.filter((p) =>
+            (p.status || "").toLowerCase().includes("vacant"),
+          ).length;
+        document.getElementById("stat-zones").textContent = new Set(
+          allProperties.map((p) => p.zone).filter(Boolean),
+        ).size;
       }
 
-      // ── Filter + list ──
+      // ── List ──
       function setFilter(f, el) {
         activeFilter = f;
         document
@@ -1157,11 +1279,15 @@
         const list = document.getElementById("propList");
         let props = allProperties.filter((p) => {
           if (activeFilter === "chicago" && !p.inCity) return false;
-          if (activeFilter === "other" && p.inCity) return false;
+          if (
+            activeFilter === "vacant" &&
+            !(p.status || "").toLowerCase().includes("vacant")
+          )
+            return false;
           if (activeFilter === "manual" && !p.manual) return false;
           if (
             q &&
-            !`${p.name} ${p.address} ${p.other} ${p.price}`
+            !`${p.name} ${p.unit} ${p.type} ${p.rent} ${p.status} ${p.amenities} ${p.zone} ${p.bedBath}`
               .toLowerCase()
               .includes(q)
           )
@@ -1169,21 +1295,42 @@
           return true;
         });
         if (!props.length) {
-          list.innerHTML = `<div class="empty-state">${!allProperties.length ? "Upload a CSV or add a property<br/>to get started." : "No properties match."}</div>`;
+          list.innerHTML = `<div class="empty-state">${!allProperties.length ? "Upload your IL Scattered Site CSV<br/>or add a property manually." : "No properties match."}</div>`;
           return;
         }
-        list.innerHTML = props
+
+        // Group by zone
+        const byZone = {};
+        props.forEach((p) => {
+          const z = p.zone || "Unknown";
+          if (!byZone[z]) byZone[z] = [];
+          byZone[z].push(p);
+        });
+
+        list.innerHTML = Object.entries(byZone)
           .map(
-            (p) => `
-    <div class="prop-item ${p.index === activeIndex ? "active" : ""}" onclick="selectProp(${p.index})">
-      <div class="prop-name">${escHtml(p.name)}</div>
-      <div class="prop-addr">${escHtml(p.address)}</div>
-      ${p.price ? `<div class="prop-price">${escHtml(p.price)}</div>` : ""}
-      <span class="prop-badge ${p.manual ? "badge-manual" : p.inCity ? "badge-chicago" : "badge-other"}">
-        ${p.manual ? "✚ Added" : p.inCity ? "✓ Chicago" : "Outside Chicago"}
-      </span>
-      ${p.manual ? `<button class="prop-delete" title="Remove" onclick="event.stopPropagation();removeProp(${p.index})">✕</button>` : ""}
-    </div>
+            ([zone, items]) => `
+    ${zone && zone !== "Unknown" ? `<div class="zone-header">${escHtml(zone)}</div>` : ""}
+    ${items
+      .map(
+        (p) => `
+      <div class="prop-item ${p.index === activeIndex ? "active" : ""}" onclick="selectProp(${p.index})">
+        <div class="prop-name">${escHtml(p.name)}</div>
+        ${p.unit ? `<div class="prop-unit">Unit ${escHtml(p.unit)}${p.type ? " · " + escHtml(p.type) : ""}</div>` : ""}
+        <div class="prop-meta">
+          ${p.rent ? `<span class="prop-rent">${escHtml(p.rent)}</span>` : ""}
+          ${p.bedBath ? `<span class="prop-bed">${escHtml(p.bedBath)} bd/ba</span>` : ""}
+          ${p.sqft ? `<span class="prop-sqft">${escHtml(p.sqft)} sqft</span>` : ""}
+        </div>
+        ${p.status ? `<div class="prop-status">${escHtml(p.status)}</div>` : ""}
+        <span class="prop-badge ${p.manual ? "badge-manual" : p.inCity ? "badge-chicago" : "badge-other"}">
+          ${p.manual ? "✚ Added" : p.inCity ? "✓ Chicago" : "Outside"}
+        </span>
+        ${p.manual ? `<button class="prop-delete" onclick="event.stopPropagation();removeProp(${p.index})" title="Remove">✕</button>` : ""}
+      </div>
+    `,
+      )
+      .join("")}
   `,
           )
           .join("");
@@ -1194,7 +1341,7 @@
         const p = allProperties[idx];
         const m = markerObjects[idx];
         if (m && p.geo) {
-          map.setView([p.geo.lat, p.geo.lng], 15);
+          map.setView([p.geo.lat, p.geo.lng], 16);
           m.openPopup();
         }
         renderList();
@@ -1207,7 +1354,6 @@
         if (markerObjects[idx]) map.removeLayer(markerObjects[idx]);
         allProperties.splice(idx, 1);
         markerObjects.splice(idx, 1);
-        // Re-index
         allProperties.forEach((p, i) => (p.index = i));
         if (activeIndex === idx) activeIndex = -1;
         else if (activeIndex > idx) activeIndex--;
@@ -1216,57 +1362,47 @@
         showToast("Property removed.");
       }
 
-      // ── Edit modal ──
+      // ── Edit ──
       function openEdit(idx) {
         map.closePopup();
         editingIndex = idx;
         const p = allProperties[idx];
-        document.getElementById("editName").value = p.name;
-        document.getElementById("editAddress").value = p.address;
-        document.getElementById("editPrice").value = p.price;
-        document.getElementById("editOther").value = p.other;
+        document.getElementById("editAddress").value = p.name;
+        document.getElementById("editUnit").value = p.unit || "";
+        document.getElementById("editRent").value = p.rent || "";
+        document.getElementById("editStatus").value = p.status || "";
+        document.getElementById("editAmenities").value = p.amenities || "";
         document.getElementById("editModal").classList.add("open");
       }
-
       function closeEdit() {
         document.getElementById("editModal").classList.remove("open");
         editingIndex = -1;
       }
-
       async function saveEdit() {
         const p = allProperties[editingIndex];
         const newAddr = document.getElementById("editAddress").value.trim();
-        const addrChanged = newAddr !== p.address;
-
-        p.name = document.getElementById("editName").value.trim() || newAddr;
-        p.address = newAddr;
-        p.price = document.getElementById("editPrice").value.trim();
-        p.other = document.getElementById("editOther").value.trim();
-
+        const addrChanged = newAddr !== p.name;
+        p.name = newAddr;
+        p.unit = document.getElementById("editUnit").value.trim();
+        p.rent = document.getElementById("editRent").value.trim();
+        p.status = document.getElementById("editStatus").value.trim();
+        p.amenities = document.getElementById("editAmenities").value.trim();
         if (addrChanged) {
           if (markerObjects[editingIndex])
             map.removeLayer(markerObjects[editingIndex]);
-          const results = await geocode(newAddr);
-          p.geo = results[0]
-            ? {
-                lat: parseFloat(results[0].lat),
-                lng: parseFloat(results[0].lon),
-              }
-            : null;
+          p.geo = await geocode(newAddr);
           p.inCity = p.geo ? isInChicago(p.geo.lat, p.geo.lng) : false;
           markerObjects[editingIndex] = addMarker(p);
         } else if (markerObjects[editingIndex]) {
-          markerObjects[editingIndex].setPopupContent(makePopup(p));
-          markerObjects[editingIndex].setIcon(makeIcon(propColor(p)));
+          markerObjects[editingIndex].setIcon(makeIcon(p));
         }
-
         closeEdit();
         updateStats();
         renderList();
         showToast("Property updated.");
       }
 
-      // ── Utilities ──
+      // ── Utils ──
       function escHtml(s) {
         return String(s)
           .replace(/&/g, "&amp;")
@@ -1276,13 +1412,12 @@
       function escJs(s) {
         return String(s).replace(/'/g, "\\'").replace(/\n/g, " ");
       }
-
       function showToast(msg) {
         const t = document.getElementById("toast");
         t.textContent = msg;
         t.classList.add("show");
-        clearTimeout(t._timer);
-        t._timer = setTimeout(() => t.classList.remove("show"), 3500);
+        clearTimeout(t._t);
+        t._t = setTimeout(() => t.classList.remove("show"), 4000);
       }
     </script>
   </body>
