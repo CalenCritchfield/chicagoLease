@@ -9,8 +9,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
     />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
       *,
       *::before,
@@ -29,7 +29,6 @@
         overflow: hidden;
       }
 
-      /* FULL-PAGE DROP OVERLAY */
       #dropOverlay {
         display: none;
         position: fixed;
@@ -59,7 +58,6 @@
         color: #93c5fd;
       }
 
-      /* HEADER */
       header {
         display: flex;
         align-items: center;
@@ -110,14 +108,12 @@
         letter-spacing: 0.08em;
       }
 
-      /* LAYOUT */
       .app-body {
         display: flex;
         flex: 1;
         overflow: hidden;
       }
 
-      /* SIDEBAR */
       .sidebar {
         width: 380px;
         flex-shrink: 0;
@@ -128,7 +124,6 @@
         overflow: hidden;
       }
 
-      /* MODE TABS */
       .mode-tabs {
         display: flex;
         border-bottom: 1px solid #2a2d38;
@@ -156,7 +151,6 @@
         border-bottom-color: #2563eb;
       }
 
-      /* PANELS */
       .panel {
         display: none;
         padding: 12px;
@@ -170,7 +164,6 @@
         display: flex;
       }
 
-      /* Drop instruction box */
       .drop-instruction {
         border: 2px dashed #2a2d38;
         border-radius: 10px;
@@ -197,14 +190,13 @@
       .drop-instruction strong {
         color: #60a5fa;
       }
-      .drop-instruction .file-loaded {
+      .file-loaded {
         color: #34d399;
         font-weight: 600;
-        font-size: 13px;
-        margin-top: 4px;
+        font-size: 12px;
+        margin-top: 6px;
       }
 
-      /* Field */
       .field-label {
         font-size: 10px;
         color: #9ca3af;
@@ -235,7 +227,6 @@
         min-height: 52px;
       }
 
-      /* Buttons */
       .btn-primary {
         width: 100%;
         padding: 9px;
@@ -272,7 +263,6 @@
         background: #1a2236;
       }
 
-      /* Address search results */
       .addr-results {
         display: flex;
         flex-direction: column;
@@ -300,7 +290,6 @@
         margin-bottom: 1px;
       }
 
-      /* Filter tabs */
       .filter-tabs {
         display: flex;
         gap: 5px;
@@ -327,7 +316,6 @@
         color: #fff;
       }
 
-      /* List search */
       .search-wrap {
         padding: 8px 12px;
         border-bottom: 1px solid #2a2d38;
@@ -350,7 +338,6 @@
         color: #4b5563;
       }
 
-      /* Property list */
       .prop-list {
         flex: 1;
         overflow-y: auto;
@@ -451,7 +438,6 @@
         background: #1a2e1a;
         color: #34d399;
       }
-
       .prop-delete {
         position: absolute;
         right: 8px;
@@ -465,7 +451,6 @@
         padding: 2px 5px;
         border-radius: 4px;
         display: none;
-        transition: color 0.15s;
       }
       .prop-item:hover .prop-delete {
         display: block;
@@ -482,13 +467,11 @@
         line-height: 1.8;
       }
 
-      /* MAP */
       #map {
         flex: 1;
         background: #0f1117;
       }
 
-      /* Leaflet popup */
       .leaflet-popup-content-wrapper {
         background: #1e2130;
         color: #e8eaf0;
@@ -531,7 +514,6 @@
         font-style: italic;
       }
 
-      /* Progress */
       .progress-wrap {
         display: none;
         flex-direction: column;
@@ -558,7 +540,6 @@
         text-align: center;
       }
 
-      /* Toast */
       .toast {
         position: fixed;
         bottom: 18px;
@@ -589,7 +570,6 @@
         }
       }
 
-      /* Edit modal */
       .modal-bg {
         display: none;
         position: fixed;
@@ -634,18 +614,19 @@
     </style>
   </head>
   <body>
-    <!-- Full-page drop overlay -->
     <div id="dropOverlay">
       <div class="drop-icon">📂</div>
-      <div class="drop-text">Drop your CSV file anywhere</div>
-      <div class="drop-sub">IL Scattered Site inventory export</div>
+      <div class="drop-text">Drop your Excel or CSV file anywhere</div>
+      <div class="drop-sub">IL Scattered Site inventory — .xlsx or .csv</div>
     </div>
 
     <header>
       <div class="logo">🏙</div>
       <div>
         <h1>IL Scattered Site Property Map</h1>
-        <span class="subtitle">Drag your CSV anywhere on the page to load</span>
+        <span class="subtitle"
+          >Drag your .xlsx or .csv file anywhere on the page</span
+        >
       </div>
       <div class="header-stats">
         <div class="stat">
@@ -671,7 +652,7 @@
       <div class="sidebar">
         <div class="mode-tabs">
           <button class="mode-tab active" onclick="switchMode('csv', this)">
-            📂 CSV
+            📂 Upload
           </button>
           <button class="mode-tab" onclick="switchMode('add', this)">
             ➕ Add Property
@@ -681,13 +662,13 @@
           </button>
         </div>
 
-        <!-- CSV PANEL -->
         <div class="panel active" id="panel-csv">
           <div class="drop-instruction" id="dropBox">
             <div class="drop-icon-sm">📂</div>
             <p>
-              <strong>Drag your CSV file</strong> anywhere onto this page<br />to
-              load your IL Scattered Site inventory.
+              <strong>Drag your Excel or CSV file</strong> anywhere onto this
+              page<br />Accepts <strong>.xlsx</strong> and
+              <strong>.csv</strong> files
             </p>
             <div
               class="file-loaded"
@@ -709,13 +690,12 @@
             class="btn-primary"
             id="mapBtn"
             style="display: none"
-            onclick="processCSV()"
+            onclick="processData()"
           >
             📍 Map All Properties
           </button>
         </div>
 
-        <!-- ADD PANEL -->
         <div class="panel" id="panel-add">
           <div>
             <label class="field-label"
@@ -772,7 +752,6 @@
           </button>
         </div>
 
-        <!-- FIND PANEL -->
         <div class="panel" id="panel-find">
           <div>
             <label class="field-label">Search any address or landmark</label>
@@ -793,7 +772,6 @@
           <div class="addr-results" id="addrResults"></div>
         </div>
 
-        <!-- Filters -->
         <div class="filter-tabs">
           <button class="tab active" onclick="setFilter('all', this)">
             All
@@ -807,7 +785,6 @@
           <button class="tab" onclick="setFilter('manual', this)">Added</button>
         </div>
 
-        <!-- List search -->
         <div class="search-wrap">
           <input
             type="text"
@@ -817,10 +794,10 @@
           />
         </div>
 
-        <!-- Property list -->
         <div class="prop-list" id="propList">
           <div class="empty-state">
-            🗂 Drag your CSV file anywhere<br />onto this page to get started.
+            🗂 Drag your .xlsx or .csv file<br />anywhere onto this page to get
+            started.
           </div>
         </div>
       </div>
@@ -828,7 +805,6 @@
       <div id="map"></div>
     </div>
 
-    <!-- Edit modal -->
     <div class="modal-bg" id="editModal">
       <div class="modal">
         <h3>Edit Property</h3>
@@ -864,453 +840,862 @@
 
     <script>
       // ── State ──
-      let allProperties = [], markerObjects = [];
-      let map, activeFilter = 'all', activeIndex = -1;
-      let pendingRows = [], editingIndex = -1;
+      var allProperties = [];
+      var markerObjects = [];
+      var activeFilter = "all";
+      var activeIndex = -1;
+      var pendingRows = [];
+      var editingIndex = -1;
 
       // ── Map ──
-      map = L.map('map', { zoomControl: true }).setView([41.8781, -87.6298], 11);
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '© OpenStreetMap © CARTO', subdomains: 'abcd', maxZoom: 19
-      }).addTo(map);
+      var map = L.map("map", { zoomControl: true }).setView(
+        [41.8781, -87.6298],
+        11,
+      );
+      L.tileLayer(
+        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+        {
+          attribution: "© OpenStreetMap © CARTO",
+          subdomains: "abcd",
+          maxZoom: 19,
+        },
+      ).addTo(map);
 
       function makeIcon(p) {
-        const color = p.manual ? '#34d399' : (p.inCity ? '#3b82f6' : '#f87171');
-        const vacant = (p.status||'').toLowerCase().includes('vacant');
-        const s = vacant ? 16 : 12;
+        var color = p.manual ? "#34d399" : p.inCity ? "#3b82f6" : "#f87171";
+        var vacant = (p.status || "").toLowerCase().indexOf("vacant") !== -1;
+        var s = vacant ? 16 : 12;
         return L.divIcon({
-          className: '',
-          html: `<div style="width:${s}px;height:${s}px;border-radius:50%;background:${color};border:2px solid #fff;box-shadow:0 0 ${vacant?8:4}px ${color},0 2px 6px rgba(0,0,0,.4)"></div>`,
-          iconSize:[s,s], iconAnchor:[s/2,s/2], popupAnchor:[0,-s/2]
+          className: "",
+          html:
+            '<div style="width:' +
+            s +
+            "px;height:" +
+            s +
+            "px;border-radius:50%;background:" +
+            color +
+            ";border:2px solid #fff;box-shadow:0 0 " +
+            (vacant ? 8 : 4) +
+            "px " +
+            color +
+            '"></div>',
+          iconSize: [s, s],
+          iconAnchor: [s / 2, s / 2],
+          popupAnchor: [0, -s / 2],
         });
       }
 
       // ── Mode tabs ──
       function switchMode(mode, el) {
-        document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        el.classList.add('active');
-        document.getElementById('panel-' + mode).classList.add('active');
+        document.querySelectorAll(".mode-tab").forEach(function (t) {
+          t.classList.remove("active");
+        });
+        document.querySelectorAll(".panel").forEach(function (p) {
+          p.classList.remove("active");
+        });
+        el.classList.add("active");
+        document.getElementById("panel-" + mode).classList.add("active");
       }
 
-      // ── FULL-PAGE DRAG AND DROP ──
-      // Prevent browser from opening files when dropped outside zones
-      document.addEventListener('dragenter', e => {
-        if (e.dataTransfer.types.includes('Files')) {
-          document.getElementById('dropOverlay').classList.add('visible');
-          document.getElementById('dropBox').classList.add('ready');
+      // ── Full-page drag and drop ──
+      document.addEventListener("dragenter", function (e) {
+        if (
+          e.dataTransfer.types &&
+          e.dataTransfer.types.indexOf("Files") !== -1
+        ) {
+          document.getElementById("dropOverlay").classList.add("visible");
+          document.getElementById("dropBox").classList.add("ready");
         }
       });
-      document.addEventListener('dragover', e => { e.preventDefault(); });
-      document.addEventListener('dragleave', e => {
-        // Only hide overlay when leaving the window entirely
-        if (e.clientX === 0 && e.clientY === 0 || e.relatedTarget === null) {
-          document.getElementById('dropOverlay').classList.remove('visible');
-          document.getElementById('dropBox').classList.remove('ready');
-        }
-      });
-      document.addEventListener('drop', e => {
+      document.addEventListener("dragover", function (e) {
         e.preventDefault();
-        document.getElementById('dropOverlay').classList.remove('visible');
-        document.getElementById('dropBox').classList.remove('ready');
-        const file = e.dataTransfer.files[0];
+      });
+      document.addEventListener("dragleave", function (e) {
+        if (e.relatedTarget === null || (e.clientX === 0 && e.clientY === 0)) {
+          document.getElementById("dropOverlay").classList.remove("visible");
+          document.getElementById("dropBox").classList.remove("ready");
+        }
+      });
+      document.addEventListener("drop", function (e) {
+        e.preventDefault();
+        document.getElementById("dropOverlay").classList.remove("visible");
+        document.getElementById("dropBox").classList.remove("ready");
+        var file = e.dataTransfer.files[0];
         if (!file) return;
-        const name = file.name.toLowerCase();
-        if (name.endsWith('.xlsx') || name.endsWith('.xls') || name.endsWith('.xlsb') || name.endsWith('.xlsm')) {
+        var name = file.name.toLowerCase();
+        if (
+          name.endsWith(".xlsx") ||
+          name.endsWith(".xls") ||
+          name.endsWith(".xlsm") ||
+          name.endsWith(".xlsb")
+        ) {
           handleExcel(file);
-        } else if (name.endsWith('.csv') || file.type === 'text/csv') {
-          handleCSVFile(file);
+        } else if (name.endsWith(".csv") || file.type === "text/csv") {
+          handleCSV(file);
         } else {
-          showToast('Please drop an Excel (.xlsx) or CSV file.');
+          showToast("Please drop an Excel (.xlsx) or CSV (.csv) file.");
         }
       });
 
-      // ── Excel handler ──
+      // ── Clean cell value ──
+      function cleanCell(val) {
+        return String(val === null || val === undefined ? "" : val)
+          .replace(/[\uFEFF\u200B\u00A0]/g, "")
+          .trim();
+      }
+
+      // ── Find column index ──
+      function findCol(headers, keywords) {
+        for (var k = 0; k < keywords.length; k++) {
+          var kw = keywords[k].toLowerCase();
+          for (var i = 0; i < headers.length; i++) {
+            if (headers[i].toLowerCase().indexOf(kw) !== -1) return i;
+          }
+        }
+        return -1;
+      }
+
+      // ── Parse raw rows (array of arrays) ──
+      function parseRows(rows, fileName) {
+        // Find header row — look for a cell containing "property" and "name"
+        var headerRowIdx = -1;
+        for (var i = 0; i < rows.length; i++) {
+          for (var j = 0; j < rows[i].length; j++) {
+            var val = cleanCell(rows[i][j]).toLowerCase();
+            if (val.indexOf("property") !== -1 && val.indexOf("name") !== -1) {
+              headerRowIdx = i;
+              break;
+            }
+          }
+          if (headerRowIdx !== -1) break;
+        }
+
+        // Fallback: first row with 7+ filled cells
+        if (headerRowIdx === -1) {
+          for (var i = 0; i < rows.length; i++) {
+            var filled = rows[i].filter(function (c) {
+              return cleanCell(c).length > 0;
+            }).length;
+            if (filled >= 7) {
+              headerRowIdx = i;
+              break;
+            }
+          }
+        }
+
+        if (headerRowIdx === -1) {
+          showToast(
+            "Could not find column headers. Please check the file and try again.",
+          );
+          return;
+        }
+
+        var headers = rows[headerRowIdx].map(function (h) {
+          return cleanCell(h);
+        });
+        var dataRows = rows.slice(headerRowIdx + 1);
+
+        var colMap = {
+          propertyName: findCol(headers, [
+            "property name",
+            "propertyname",
+            "property",
+          ]),
+          unit: findCol(headers, ["unit"]),
+          unitType: findCol(headers, ["unit type", "unittype", "type"]),
+          marketRent: findCol(headers, ["market rent", "marketrent", "rent"]),
+          rentReady: findCol(headers, ["rent ready", "rentready"]),
+          bedBath: findCol(headers, [
+            "bed/bath",
+            "bed bath",
+            "bedroom",
+            "beds",
+          ]),
+          sqft: findCol(headers, ["sqft", "sq ft", "square feet", "square"]),
+          unitStatus: findCol(headers, ["unit status", "unitstatus", "status"]),
+          amenities: findCol(headers, [
+            "unit amenities",
+            "amenities",
+            "features",
+          ]),
+        };
+
+        if (colMap.propertyName === -1) colMap.propertyName = 0;
+
+        var currentZone = "";
+        pendingRows = [];
+
+        dataRows.forEach(function (r) {
+          var name = cleanCell(r[colMap.propertyName]);
+          if (/^zone\s*\d+/i.test(name)) {
+            currentZone = name;
+            return;
+          }
+          if (!name) return;
+          pendingRows.push({
+            name: name,
+            zone: currentZone,
+            unit: colMap.unit !== -1 ? cleanCell(r[colMap.unit]) : "",
+            type: colMap.unitType !== -1 ? cleanCell(r[colMap.unitType]) : "",
+            rent:
+              colMap.marketRent !== -1 ? cleanCell(r[colMap.marketRent]) : "",
+            rentReady:
+              colMap.rentReady !== -1 ? cleanCell(r[colMap.rentReady]) : "",
+            bedBath: colMap.bedBath !== -1 ? cleanCell(r[colMap.bedBath]) : "",
+            sqft: colMap.sqft !== -1 ? cleanCell(r[colMap.sqft]) : "",
+            status:
+              colMap.unitStatus !== -1 ? cleanCell(r[colMap.unitStatus]) : "",
+            amenities:
+              colMap.amenities !== -1 ? cleanCell(r[colMap.amenities]) : "",
+          });
+        });
+
+        var zones = new Set(
+          pendingRows
+            .map(function (r) {
+              return r.zone;
+            })
+            .filter(Boolean),
+        ).size;
+        var msg =
+          "✅ " +
+          fileName +
+          " — " +
+          pendingRows.length +
+          " units, " +
+          zones +
+          " zones";
+        document.getElementById("fileLoadedMsg").textContent = msg;
+        document.getElementById("fileLoadedMsg").style.display = "block";
+        document.getElementById("mapBtn").style.display = "block";
+        switchMode("csv", document.querySelectorAll(".mode-tab")[0]);
+        showToast(
+          "Loaded " +
+            pendingRows.length +
+            " units across " +
+            zones +
+            ' zones. Click "Map All Properties" to plot them.',
+        );
+      }
+
+      // ── Excel file handler ──
       function handleExcel(file) {
-        const reader = new FileReader();
-        reader.onload = e => {
+        var reader = new FileReader();
+        reader.onload = function (e) {
           try {
-            const wb = XLSX.read(e.target.result, { type: 'array' });
-            // Use the first sheet
-            const ws = wb.Sheets[wb.SheetNames[0]];
-            // Convert to array of arrays (raw, no header parsing)
-            const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+            var wb = XLSX.read(e.target.result, { type: "array" });
+            var ws = wb.Sheets[wb.SheetNames[0]];
+            var rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: "" });
             parseRows(rows, file.name);
-          } catch(err) {
-            showToast('Could not read Excel file: ' + err.message);
+          } catch (err) {
+            showToast("Could not read Excel file: " + err.message);
           }
         };
         reader.readAsArrayBuffer(file);
       }
 
-      // ── CSV handler ──
-      function handleCSVFile(file) {
+      // ── CSV file handler ──
+      function handleCSV(file) {
         Papa.parse(file, {
-          header: false, skipEmptyLines: false,
-          complete: result => parseRows(result.data, file.name),
-          error: () => showToast('Could not parse CSV file.')
-        });
-      }
-        // Strip BOM, zero-width spaces, non-breaking spaces, and trim
-        return String(s).replace(/[\uFEFF\u200B\u00A0]/g, '').trim();
-      }
-
-      function parseRows(rows, fileName) {
-
-            // Find header row — look for any cell that contains "property" and "name"
-            let headerRowIdx = -1;
-            for (let i = 0; i < rows.length; i++) {
-              for (let j = 0; j < rows[i].length; j++) {
-                const val = cleanCell(rows[i][j]).toLowerCase();
-                if (val.includes('property') && val.includes('name')) {
-                  headerRowIdx = i; break;
-                }
-              }
-              if (headerRowIdx !== -1) break;
-            }
-
-            // Fallback: look for any row with 8+ non-empty cells (likely the header)
-            if (headerRowIdx === -1) {
-              for (let i = 0; i < rows.length; i++) {
-                const filled = rows[i].filter(c => cleanCell(c).length > 0).length;
-                if (filled >= 7) { headerRowIdx = i; break; }
-              }
-            }
-
-            if (headerRowIdx === -1) {
-              showToast('Could not read the CSV structure. Please upload the file here in chat so we can inspect it.');
-              return;
-            }
-
-            const headers = rows[headerRowIdx].map(h => cleanCell(h));
-            const dataRows = rows.slice(headerRowIdx + 1);
-
-            // Debug: log headers so user can report them
-            console.log('Detected headers:', headers);
-
-            const colMap = {
-              propertyName: findCol(headers, ['property name', 'propertyname', 'property']),
-              unit:         findCol(headers, ['unit']),
-              unitType:     findCol(headers, ['unit type', 'unittype', 'type']),
-              marketRent:   findCol(headers, ['market rent', 'marketrent', 'rent']),
-              rentReady:    findCol(headers, ['rent ready', 'rentready']),
-              bedBath:      findCol(headers, ['bed/bath','bed bath','bedroom','beds']),
-              sqft:         findCol(headers, ['sqft','sq ft','square feet','square']),
-              unitStatus:   findCol(headers, ['unit status','unitstatus','status']),
-              amenities:    findCol(headers, ['unit amenities','amenities','features'])
-            };
-
-            // If propertyName still not found, assume column 0
-            if (colMap.propertyName === -1) colMap.propertyName = 0;
-
-            let currentZone = '';
-            pendingRows = [];
-            dataRows.forEach(r => {
-              const name = String(r[colMap.propertyName]||'').trim();
-              if (/^zone\s*\d+/i.test(name)) { currentZone = name; return; }
-              if (!name) return;
-              pendingRows.push({
-                name, zone: currentZone,
-                unit:      String(r[colMap.unit]||'').trim(),
-                type:      String(r[colMap.unitType]||'').trim(),
-                rent:      String(r[colMap.marketRent]||'').trim(),
-                rentReady: String(r[colMap.rentReady]||'').trim(),
-                bedBath:   String(r[colMap.bedBath]||'').trim(),
-                sqft:      String(r[colMap.sqft]||'').trim(),
-                status:    String(r[colMap.unitStatus]||'').trim(),
-                amenities: String(r[colMap.amenities]||'').trim()
-              });
-            });
-
-            const zones = new Set(pendingRows.map(r=>r.zone).filter(Boolean)).size;
-            const msg = `✅ ${file.name} — ${pendingRows.length} units, ${zones} zones`;
-            document.getElementById('fileLoadedMsg').textContent = msg;
-            document.getElementById('fileLoadedMsg').style.display = 'block';
-            document.getElementById('mapBtn').style.display = 'block';
-
-            // Switch to CSV tab to show the button
-            switchMode('csv', document.querySelectorAll('.mode-tab')[0]);
-            showToast(`Loaded ${pendingRows.length} units across ${zones} zones. Click "Map All Properties" to plot them.`);
+          header: false,
+          skipEmptyLines: false,
+          complete: function (result) {
+            parseRows(result.data, file.name);
           },
-          error: () => showToast('Could not parse file. Make sure it is a valid CSV.')
+          error: function () {
+            showToast("Could not parse CSV file.");
+          },
         });
-      }
-
-      function findCol(headers, keywords) {
-        for (let k of keywords) {
-          const idx = headers.findIndex(h => cleanCell(h).toLowerCase().includes(k.toLowerCase()));
-          if (idx !== -1) return idx;
-        }
-        return -1;
       }
 
       // ── Geocode ──
       async function geocode(address) {
         try {
-          const q = /chicago/i.test(address) ? address : address + ', Chicago, IL';
-          const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)}`, { headers:{'Accept-Language':'en'} });
-          const data = await res.json();
-          if (data && data[0]) return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
-        } catch(e) {}
+          var q = /chicago/i.test(address)
+            ? address
+            : address + ", Chicago, IL";
+          var res = await fetch(
+            "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" +
+              encodeURIComponent(q),
+            { headers: { "Accept-Language": "en" } },
+          );
+          var data = await res.json();
+          if (data && data[0])
+            return {
+              lat: parseFloat(data[0].lat),
+              lng: parseFloat(data[0].lon),
+            };
+        } catch (e) {}
         return null;
       }
 
       function isInChicago(lat, lng) {
-        return lat >= 41.644 && lat <= 42.023 && lng >= -87.940 && lng <= -87.524;
+        return (
+          lat >= 41.644 && lat <= 42.023 && lng >= -87.94 && lng <= -87.524
+        );
       }
 
-      // ── Process CSV ──
-      async function processCSV() {
-        if (!pendingRows.length) { showToast('No data loaded. Drag your CSV file onto the page first.'); return; }
-        const btn = document.getElementById('mapBtn');
-        btn.disabled = true; btn.textContent = '⏳ Mapping…';
-        const pw = document.getElementById('progressWrap');
-        pw.classList.add('visible');
+      // ── Process data ──
+      async function processData() {
+        if (!pendingRows.length) {
+          showToast("No data loaded. Drag your file onto the page first.");
+          return;
+        }
 
-        // Keep manual props
-        const manualProps = allProperties.filter(p => p.manual);
-        const manualMrks  = manualProps.map(p => markerObjects[p.index]);
-        allProperties.filter(p => !p.manual).forEach(p => { if(markerObjects[p.index]) map.removeLayer(markerObjects[p.index]); });
+        var btn = document.getElementById("mapBtn");
+        btn.disabled = true;
+        btn.textContent = "⏳ Mapping…";
+        var pw = document.getElementById("progressWrap");
+        pw.classList.add("visible");
+
+        // Keep manual props, remove CSV ones
+        var manualProps = allProperties.filter(function (p) {
+          return p.manual;
+        });
+        var manualMrks = manualProps.map(function (p) {
+          return markerObjects[p.index];
+        });
+        allProperties
+          .filter(function (p) {
+            return !p.manual;
+          })
+          .forEach(function (p) {
+            if (markerObjects[p.index]) map.removeLayer(markerObjects[p.index]);
+          });
         allProperties = manualProps;
         markerObjects = [];
-        manualProps.forEach((p,i) => { p.index=i; markerObjects[i]=manualMrks[i]; });
+        manualProps.forEach(function (p, i) {
+          p.index = i;
+          markerObjects[i] = manualMrks[i];
+        });
 
-        const addrCache = {};
-        for (let i = 0; i < pendingRows.length; i++) {
-          const row = pendingRows[i];
-          const pct = Math.round((i / pendingRows.length) * 100);
-          document.getElementById('progressBar').style.width = pct + '%';
-          document.getElementById('progressLabel').textContent = `${i+1} / ${pendingRows.length} — ${row.name}`;
+        var addrCache = {};
 
-          let geo = addrCache[row.name];
-          if (geo === undefined) {
+        for (var i = 0; i < pendingRows.length; i++) {
+          var row = pendingRows[i];
+          var pct = Math.round((i / pendingRows.length) * 100);
+          document.getElementById("progressBar").style.width = pct + "%";
+          document.getElementById("progressLabel").textContent =
+            i + 1 + " / " + pendingRows.length + " — " + row.name;
+
+          var geo;
+          if (addrCache.hasOwnProperty(row.name)) {
+            geo = addrCache[row.name];
+          } else {
             geo = await geocode(row.name);
             addrCache[row.name] = geo;
-            await new Promise(r => setTimeout(r, 350));
+            await new Promise(function (r) {
+              setTimeout(r, 350);
+            });
           }
 
-          const inCity = geo ? isInChicago(geo.lat, geo.lng) : false;
-          const prop = { ...row, geo, inCity, manual: false, index: allProperties.length };
+          var inCity = geo ? isInChicago(geo.lat, geo.lng) : false;
+          var prop = Object.assign({}, row, {
+            geo: geo,
+            inCity: inCity,
+            manual: false,
+            index: allProperties.length,
+          });
           allProperties.push(prop);
           markerObjects.push(addMarker(prop));
         }
 
-        document.getElementById('progressBar').style.width = '100%';
-        document.getElementById('progressLabel').textContent = 'Done!';
-        setTimeout(() => pw.classList.remove('visible'), 2000);
+        document.getElementById("progressBar").style.width = "100%";
+        document.getElementById("progressLabel").textContent = "Done!";
+        setTimeout(function () {
+          pw.classList.remove("visible");
+        }, 2000);
 
-        updateStats(); renderList(); fitChicago();
-        btn.disabled = false; btn.textContent = '🔄 Re-map Properties';
-        showToast(`Mapped ${allProperties.filter(p=>p.inCity).length} units in Chicago. ${allProperties.filter(p=>!p.geo).length} could not be geocoded.`);
+        updateStats();
+        renderList();
+        fitChicago();
+        btn.disabled = false;
+        btn.textContent = "🔄 Re-map Properties";
+
+        var chicagoCount = allProperties.filter(function (p) {
+          return p.inCity;
+        }).length;
+        var failCount = allProperties.filter(function (p) {
+          return !p.geo;
+        }).length;
+        showToast(
+          "Mapped " +
+            chicagoCount +
+            " units in Chicago. " +
+            failCount +
+            " could not be geocoded.",
+        );
       }
 
-      // ── Add manual ──
+      // ── Add manual property ──
       async function addManualProperty() {
-        const address = document.getElementById('addAddress').value.trim();
-        if (!address) { showToast('Address is required.'); return; }
-        const btn = document.getElementById('addBtn');
-        btn.disabled=true; btn.textContent='⏳ Looking up…';
-        const geo = await geocode(address);
-        if (!geo) { showToast('Could not find that address. Try adding Chicago, IL.'); btn.disabled=false; btn.textContent='📍 Add to Map'; return; }
-
-        const inCity = isInChicago(geo.lat, geo.lng);
-        const prop = {
-          name: address, unit: document.getElementById('addUnit').value.trim(),
-          type: document.getElementById('addType').value.trim(), rent: document.getElementById('addRent').value.trim(),
-          rentReady: '', bedBath: document.getElementById('addBed').value.trim(),
-          sqft: document.getElementById('addSqft').value.trim(), status: document.getElementById('addStatus').value.trim(),
-          amenities: document.getElementById('addAmenities').value.trim(),
-          zone: 'Manually Added', geo, inCity, manual: true, index: allProperties.length
+        var address = document.getElementById("addAddress").value.trim();
+        if (!address) {
+          showToast("Address is required.");
+          return;
+        }
+        var btn = document.getElementById("addBtn");
+        btn.disabled = true;
+        btn.textContent = "⏳ Looking up…";
+        var geo = await geocode(address);
+        if (!geo) {
+          showToast("Could not find that address. Try including Chicago, IL.");
+          btn.disabled = false;
+          btn.textContent = "📍 Add to Map";
+          return;
+        }
+        var inCity = isInChicago(geo.lat, geo.lng);
+        var prop = {
+          name: address,
+          unit: document.getElementById("addUnit").value.trim(),
+          type: document.getElementById("addType").value.trim(),
+          rent: document.getElementById("addRent").value.trim(),
+          rentReady: "",
+          bedBath: document.getElementById("addBed").value.trim(),
+          sqft: document.getElementById("addSqft").value.trim(),
+          status: document.getElementById("addStatus").value.trim(),
+          amenities: document.getElementById("addAmenities").value.trim(),
+          zone: "Manually Added",
+          geo: geo,
+          inCity: inCity,
+          manual: true,
+          index: allProperties.length,
         };
         allProperties.push(prop);
         markerObjects.push(addMarker(prop));
         map.setView([geo.lat, geo.lng], 15);
-        markerObjects[prop.index]?.openPopup();
-        ['addAddress','addUnit','addType','addRent','addBed','addSqft','addStatus','addAmenities'].forEach(id => document.getElementById(id).value='');
-        btn.disabled=false; btn.textContent='📍 Add to Map';
-        updateStats(); renderList();
-        showToast(`Added "${prop.name}" — ${inCity?'✓ In Chicago':'Outside Chicago'}`);
+        if (markerObjects[prop.index]) markerObjects[prop.index].openPopup();
+        [
+          "addAddress",
+          "addUnit",
+          "addType",
+          "addRent",
+          "addBed",
+          "addSqft",
+          "addStatus",
+          "addAmenities",
+        ].forEach(function (id) {
+          document.getElementById(id).value = "";
+        });
+        btn.disabled = false;
+        btn.textContent = "📍 Add to Map";
+        updateStats();
+        renderList();
+        showToast(
+          'Added "' +
+            prop.name +
+            '" — ' +
+            (inCity ? "✓ In Chicago" : "Outside Chicago"),
+        );
       }
 
       // ── Find address ──
       async function searchAddress() {
-        const q = document.getElementById('addrSearchInput').value.trim();
+        var q = document.getElementById("addrSearchInput").value.trim();
         if (!q) return;
-        const btn = document.getElementById('addrSearchBtn');
-        btn.disabled=true; btn.textContent='⏳…';
+        var btn = document.getElementById("addrSearchBtn");
+        btn.disabled = true;
+        btn.textContent = "⏳…";
         try {
-          const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=5&q=${encodeURIComponent(q+', Chicago, IL')}`, { headers:{'Accept-Language':'en'} });
-          const results = await res.json();
-          const container = document.getElementById('addrResults');
-          if (!results.length) { container.innerHTML='<div style="font-size:11px;color:#6b7280;padding:6px">No results found.</div>'; }
-          else {
-            container.innerHTML = results.slice(0,5).map(r => {
-              const lat=parseFloat(r.lat), lng=parseFloat(r.lon), inCity=isInChicago(lat,lng);
-              return `<div class="addr-result-item" onclick="jumpToResult(${lat},${lng},'${escJs(r.display_name)}')">
-                <div class="addr-result-name">${escHtml(r.display_name.split(',')[0])}</div>
-                <div style="font-size:10px;margin-top:1px">${escHtml(r.display_name.split(',').slice(1,3).join(',').trim())}
-                  ${inCity?'<span style="color:#60a5fa;margin-left:5px">✓ Chicago</span>':''}
-                </div>
-              </div>`;
-            }).join('');
+          var res = await fetch(
+            "https://nominatim.openstreetmap.org/search?format=json&limit=5&q=" +
+              encodeURIComponent(q + ", Chicago, IL"),
+            { headers: { "Accept-Language": "en" } },
+          );
+          var results = await res.json();
+          var container = document.getElementById("addrResults");
+          if (!results.length) {
+            container.innerHTML =
+              '<div style="font-size:11px;color:#6b7280;padding:6px">No results found.</div>';
+          } else {
+            container.innerHTML = results
+              .slice(0, 5)
+              .map(function (r) {
+                var lat = parseFloat(r.lat),
+                  lng = parseFloat(r.lon),
+                  inCity = isInChicago(lat, lng);
+                return (
+                  '<div class="addr-result-item" onclick="jumpToResult(' +
+                  lat +
+                  "," +
+                  lng +
+                  ",'" +
+                  escJs(r.display_name) +
+                  "')\">" +
+                  '<div class="addr-result-name">' +
+                  escHtml(r.display_name.split(",")[0]) +
+                  "</div>" +
+                  '<div style="font-size:10px;margin-top:1px">' +
+                  escHtml(
+                    r.display_name.split(",").slice(1, 3).join(",").trim(),
+                  ) +
+                  (inCity
+                    ? '<span style="color:#60a5fa;margin-left:5px">✓ Chicago</span>'
+                    : "") +
+                  "</div></div>"
+                );
+              })
+              .join("");
           }
-        } catch(e) { showToast('Search failed.'); }
-        btn.disabled=false; btn.textContent='🔍 Search';
+        } catch (e) {
+          showToast("Search failed.");
+        }
+        btn.disabled = false;
+        btn.textContent = "🔍 Search";
       }
 
       function jumpToResult(lat, lng, displayName) {
-        map.setView([lat,lng],16);
-        L.popup().setLatLng([lat,lng])
-          .setContent(`<div class="popup-name">📍 ${escHtml(displayName.split(',')[0])}</div>
-            <div class="popup-row" style="font-size:11px">${escHtml(displayName)}</div>
-            <div style="margin-top:8px">
-              <button onclick="prefillAdd('${escJs(displayName)}')" style="padding:5px 10px;background:#2563eb;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer">Add as Property</button>
-            </div>`).openOn(map);
+        map.setView([lat, lng], 16);
+        L.popup()
+          .setLatLng([lat, lng])
+          .setContent(
+            '<div class="popup-name">📍 ' +
+              escHtml(displayName.split(",")[0]) +
+              "</div>" +
+              '<div class="popup-row" style="font-size:11px">' +
+              escHtml(displayName) +
+              "</div>" +
+              '<div style="margin-top:8px"><button onclick="prefillAdd(\'' +
+              escJs(displayName) +
+              "')\" " +
+              'style="padding:5px 10px;background:#2563eb;color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer">Add as Property</button></div>',
+          )
+          .openOn(map);
       }
 
       function prefillAdd(displayName) {
         map.closePopup();
-        document.getElementById('addAddress').value = displayName.split(',').slice(0,3).join(',').trim();
-        switchMode('add', document.querySelectorAll('.mode-tab')[1]);
+        document.getElementById("addAddress").value = displayName
+          .split(",")
+          .slice(0, 3)
+          .join(",")
+          .trim();
+        switchMode("add", document.querySelectorAll(".mode-tab")[1]);
         showToast('Address pre-filled — add details and click "Add to Map"');
       }
 
-      // ── Marker ──
+      // ── Add marker ──
       function addMarker(prop) {
         if (!prop.geo) return null;
-        const marker = L.marker([prop.geo.lat, prop.geo.lng], { icon: makeIcon(prop) })
-          .addTo(map).bindPopup(() => makePopup(prop));
-        marker.on('click', () => selectProp(prop.index));
+        var marker = L.marker([prop.geo.lat, prop.geo.lng], {
+          icon: makeIcon(prop),
+        })
+          .addTo(map)
+          .bindPopup(makePopup(prop));
+        var idx = prop.index;
+        marker.on("click", function () {
+          selectProp(idx);
+        });
         return marker;
       }
 
       function makePopup(p) {
-        return `<div class="popup-name">${escHtml(p.name)}</div>
-          ${p.unit?`<div class="popup-row"><strong>Unit:</strong> ${escHtml(p.unit)}${p.type?' — '+escHtml(p.type):''}</div>`:''}
-          ${p.rent?`<div class="popup-rent">${escHtml(p.rent)}/mo</div>`:''}
-          ${p.bedBath?`<div class="popup-row"><strong>Bed/Bath:</strong> ${escHtml(p.bedBath)}</div>`:''}
-          ${p.sqft?`<div class="popup-row"><strong>Sqft:</strong> ${escHtml(p.sqft)}</div>`:''}
-          ${p.status?`<div class="popup-row"><strong>Status:</strong> <span style="color:${(p.status||'').toLowerCase().includes('vacant')?'#f59e0b':'#34d399'}">${escHtml(p.status)}</span></div>`:''}
-          ${p.zone?`<div class="popup-row"><strong>Zone:</strong> ${escHtml(p.zone)}</div>`:''}
-          ${p.amenities?`<div class="popup-amenities">${escHtml(p.amenities)}</div>`:''}
-          <div style="margin-top:8px;display:flex;gap:10px;flex-wrap:wrap">
-            <a href="https://www.google.com/maps/search/?api=1&query=${p.geo.lat},${p.geo.lng}" target="_blank" style="color:#60a5fa;font-size:11px;text-decoration:none">📍 Google Maps</a>
-            <a href="https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${p.geo.lat},${p.geo.lng}" target="_blank" style="color:#60a5fa;font-size:11px;text-decoration:none">🚶 Street View</a>
-            ${p.manual?`<span onclick="openEdit(${p.index})" style="color:#34d399;font-size:11px;cursor:pointer">✏️ Edit</span>`:''}
-          </div>`;
+        return (
+          '<div class="popup-name">' +
+          escHtml(p.name) +
+          "</div>" +
+          (p.unit
+            ? '<div class="popup-row"><strong>Unit:</strong> ' +
+              escHtml(p.unit) +
+              (p.type ? " — " + escHtml(p.type) : "") +
+              "</div>"
+            : "") +
+          (p.rent
+            ? '<div class="popup-rent">' + escHtml(p.rent) + "/mo</div>"
+            : "") +
+          (p.bedBath
+            ? '<div class="popup-row"><strong>Bed/Bath:</strong> ' +
+              escHtml(p.bedBath) +
+              "</div>"
+            : "") +
+          (p.sqft
+            ? '<div class="popup-row"><strong>Sqft:</strong> ' +
+              escHtml(p.sqft) +
+              "</div>"
+            : "") +
+          (p.status
+            ? '<div class="popup-row"><strong>Status:</strong> <span style="color:' +
+              (p.status.toLowerCase().indexOf("vacant") !== -1
+                ? "#f59e0b"
+                : "#34d399") +
+              '">' +
+              escHtml(p.status) +
+              "</span></div>"
+            : "") +
+          (p.zone
+            ? '<div class="popup-row"><strong>Zone:</strong> ' +
+              escHtml(p.zone) +
+              "</div>"
+            : "") +
+          (p.amenities
+            ? '<div class="popup-amenities">' + escHtml(p.amenities) + "</div>"
+            : "") +
+          '<div style="margin-top:8px;display:flex;gap:10px;flex-wrap:wrap">' +
+          '<a href="https://www.google.com/maps/search/?api=1&query=' +
+          p.geo.lat +
+          "," +
+          p.geo.lng +
+          '" target="_blank" style="color:#60a5fa;font-size:11px;text-decoration:none">📍 Google Maps</a>' +
+          '<a href="https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=' +
+          p.geo.lat +
+          "," +
+          p.geo.lng +
+          '" target="_blank" style="color:#60a5fa;font-size:11px;text-decoration:none">🚶 Street View</a>' +
+          (p.manual
+            ? '<span onclick="openEdit(' +
+              p.index +
+              ')" style="color:#34d399;font-size:11px;cursor:pointer">✏️ Edit</span>'
+            : "") +
+          "</div>"
+        );
       }
 
       function fitChicago() {
-        const pts = allProperties.filter(p=>p.inCity&&p.geo).map(p=>[p.geo.lat,p.geo.lng]);
+        var pts = allProperties
+          .filter(function (p) {
+            return p.inCity && p.geo;
+          })
+          .map(function (p) {
+            return [p.geo.lat, p.geo.lng];
+          });
         if (pts.length) map.fitBounds(L.latLngBounds(pts).pad(0.08));
       }
 
       // ── Stats ──
       function updateStats() {
-        document.getElementById('stat-total').textContent   = allProperties.length;
-        document.getElementById('stat-chicago').textContent = allProperties.filter(p=>p.inCity).length;
-        document.getElementById('stat-vacant').textContent  = allProperties.filter(p=>(p.status||'').toLowerCase().includes('vacant')).length;
-        document.getElementById('stat-zones').textContent   = new Set(allProperties.map(p=>p.zone).filter(Boolean)).size;
+        document.getElementById("stat-total").textContent =
+          allProperties.length;
+        document.getElementById("stat-chicago").textContent =
+          allProperties.filter(function (p) {
+            return p.inCity;
+          }).length;
+        document.getElementById("stat-vacant").textContent =
+          allProperties.filter(function (p) {
+            return (p.status || "").toLowerCase().indexOf("vacant") !== -1;
+          }).length;
+        document.getElementById("stat-zones").textContent = new Set(
+          allProperties
+            .map(function (p) {
+              return p.zone;
+            })
+            .filter(Boolean),
+        ).size;
       }
 
-      // ── List ──
+      // ── Filter + list ──
       function setFilter(f, el) {
         activeFilter = f;
-        document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-        el.classList.add('active'); renderList();
+        document.querySelectorAll(".tab").forEach(function (t) {
+          t.classList.remove("active");
+        });
+        el.classList.add("active");
+        renderList();
       }
 
       function renderList() {
-        const q = document.getElementById('searchBox').value.toLowerCase();
-        const list = document.getElementById('propList');
-        let props = allProperties.filter(p => {
-          if (activeFilter==='chicago' && !p.inCity) return false;
-          if (activeFilter==='vacant'  && !(p.status||'').toLowerCase().includes('vacant')) return false;
-          if (activeFilter==='manual'  && !p.manual) return false;
-          if (q && !`${p.name} ${p.unit} ${p.type} ${p.rent} ${p.status} ${p.amenities} ${p.zone} ${p.bedBath}`.toLowerCase().includes(q)) return false;
+        var q = document.getElementById("searchBox").value.toLowerCase();
+        var list = document.getElementById("propList");
+
+        var props = allProperties.filter(function (p) {
+          if (activeFilter === "chicago" && !p.inCity) return false;
+          if (
+            activeFilter === "vacant" &&
+            (p.status || "").toLowerCase().indexOf("vacant") === -1
+          )
+            return false;
+          if (activeFilter === "manual" && !p.manual) return false;
+          if (
+            q &&
+            (
+              p.name +
+              " " +
+              p.unit +
+              " " +
+              p.type +
+              " " +
+              p.rent +
+              " " +
+              p.status +
+              " " +
+              p.amenities +
+              " " +
+              p.zone +
+              " " +
+              p.bedBath
+            )
+              .toLowerCase()
+              .indexOf(q) === -1
+          )
+            return false;
           return true;
         });
+
         if (!props.length) {
-          list.innerHTML = `<div class="empty-state">${!allProperties.length?'🗂 Drag your CSV file anywhere<br/>onto this page to get started.':'No properties match your search.'}</div>`;
+          list.innerHTML =
+            '<div class="empty-state">' +
+            (!allProperties.length
+              ? "🗂 Drag your .xlsx or .csv file<br/>anywhere onto this page to get started."
+              : "No properties match your search.") +
+            "</div>";
           return;
         }
-        const byZone = {};
-        props.forEach(p => { const z=p.zone||'Other'; if(!byZone[z]) byZone[z]=[]; byZone[z].push(p); });
-        list.innerHTML = Object.entries(byZone).map(([zone, items]) => `
-          ${zone&&zone!=='Other'?`<div class="zone-header">${escHtml(zone)}</div>`:''}
-          ${items.map(p=>`
-            <div class="prop-item ${p.index===activeIndex?'active':''}" onclick="selectProp(${p.index})">
-              <div class="prop-name">${escHtml(p.name)}</div>
-              ${p.unit?`<div class="prop-unit">Unit ${escHtml(p.unit)}${p.type?' · '+escHtml(p.type):''}</div>`:''}
-              <div class="prop-meta">
-                ${p.rent?`<span class="prop-rent">${escHtml(p.rent)}</span>`:''}
-                ${p.bedBath?`<span class="prop-bed">${escHtml(p.bedBath)} bd/ba</span>`:''}
-                ${p.sqft?`<span class="prop-sqft">${escHtml(p.sqft)} sqft</span>`:''}
-              </div>
-              ${p.status?`<div class="prop-status">${escHtml(p.status)}</div>`:''}
-              <span class="prop-badge ${p.manual?'badge-manual':p.inCity?'badge-chicago':'badge-other'}">
-                ${p.manual?'✚ Added':p.inCity?'✓ Chicago':'Outside'}
-              </span>
-              ${p.manual?`<button class="prop-delete" onclick="event.stopPropagation();removeProp(${p.index})" title="Remove">✕</button>`:''}
-            </div>
-          `).join('')}
-        `).join('');
+
+        var byZone = {};
+        props.forEach(function (p) {
+          var z = p.zone || "Other";
+          if (!byZone[z]) byZone[z] = [];
+          byZone[z].push(p);
+        });
+
+        var html = "";
+        Object.keys(byZone).forEach(function (zone) {
+          if (zone && zone !== "Other") {
+            html += '<div class="zone-header">' + escHtml(zone) + "</div>";
+          }
+          byZone[zone].forEach(function (p) {
+            html +=
+              '<div class="prop-item ' +
+              (p.index === activeIndex ? "active" : "") +
+              '" onclick="selectProp(' +
+              p.index +
+              ')">' +
+              '<div class="prop-name">' +
+              escHtml(p.name) +
+              "</div>" +
+              (p.unit
+                ? '<div class="prop-unit">Unit ' +
+                  escHtml(p.unit) +
+                  (p.type ? " · " + escHtml(p.type) : "") +
+                  "</div>"
+                : "") +
+              '<div class="prop-meta">' +
+              (p.rent
+                ? '<span class="prop-rent">' + escHtml(p.rent) + "</span>"
+                : "") +
+              (p.bedBath
+                ? '<span class="prop-bed">' +
+                  escHtml(p.bedBath) +
+                  " bd/ba</span>"
+                : "") +
+              (p.sqft
+                ? '<span class="prop-sqft">' + escHtml(p.sqft) + " sqft</span>"
+                : "") +
+              "</div>" +
+              (p.status
+                ? '<div class="prop-status">' + escHtml(p.status) + "</div>"
+                : "") +
+              '<span class="prop-badge ' +
+              (p.manual
+                ? "badge-manual"
+                : p.inCity
+                  ? "badge-chicago"
+                  : "badge-other") +
+              '">' +
+              (p.manual ? "✚ Added" : p.inCity ? "✓ Chicago" : "Outside") +
+              "</span>" +
+              (p.manual
+                ? '<button class="prop-delete" onclick="event.stopPropagation();removeProp(' +
+                  p.index +
+                  ')" title="Remove">✕</button>'
+                : "") +
+              "</div>";
+          });
+        });
+        list.innerHTML = html;
       }
 
       function selectProp(idx) {
         activeIndex = idx;
-        const p = allProperties[idx], m = markerObjects[idx];
-        if (m && p.geo) { map.setView([p.geo.lat,p.geo.lng],16); m.openPopup(); }
+        var p = allProperties[idx];
+        var m = markerObjects[idx];
+        if (m && p.geo) {
+          map.setView([p.geo.lat, p.geo.lng], 16);
+          m.openPopup();
+        }
         renderList();
-        document.querySelector('.prop-item.active')?.scrollIntoView({block:'nearest',behavior:'smooth'});
+        var el = document.querySelector(".prop-item.active");
+        if (el) el.scrollIntoView({ block: "nearest", behavior: "smooth" });
       }
 
       function removeProp(idx) {
         if (markerObjects[idx]) map.removeLayer(markerObjects[idx]);
-        allProperties.splice(idx,1); markerObjects.splice(idx,1);
-        allProperties.forEach((p,i)=>p.index=i);
-        if (activeIndex===idx) activeIndex=-1; else if (activeIndex>idx) activeIndex--;
-        updateStats(); renderList(); showToast('Property removed.');
+        allProperties.splice(idx, 1);
+        markerObjects.splice(idx, 1);
+        allProperties.forEach(function (p, i) {
+          p.index = i;
+        });
+        if (activeIndex === idx) activeIndex = -1;
+        else if (activeIndex > idx) activeIndex--;
+        updateStats();
+        renderList();
+        showToast("Property removed.");
       }
 
       // ── Edit ──
       function openEdit(idx) {
-        map.closePopup(); editingIndex=idx;
-        const p=allProperties[idx];
-        document.getElementById('editAddress').value  =p.name;
-        document.getElementById('editUnit').value     =p.unit||'';
-        document.getElementById('editRent').value     =p.rent||'';
-        document.getElementById('editStatus').value   =p.status||'';
-        document.getElementById('editAmenities').value=p.amenities||'';
-        document.getElementById('editModal').classList.add('open');
-      }
-      function closeEdit() { document.getElementById('editModal').classList.remove('open'); editingIndex=-1; }
-      async function saveEdit() {
-        const p=allProperties[editingIndex];
-        const newAddr=document.getElementById('editAddress').value.trim();
-        const addrChanged=newAddr!==p.name;
-        p.name=newAddr; p.unit=document.getElementById('editUnit').value.trim();
-        p.rent=document.getElementById('editRent').value.trim();
-        p.status=document.getElementById('editStatus').value.trim();
-        p.amenities=document.getElementById('editAmenities').value.trim();
-        if (addrChanged) {
-          if(markerObjects[editingIndex]) map.removeLayer(markerObjects[editingIndex]);
-          p.geo=await geocode(newAddr);
-          p.inCity=p.geo?isInChicago(p.geo.lat,p.geo.lng):false;
-          markerObjects[editingIndex]=addMarker(p);
-        } else if(markerObjects[editingIndex]) {
-          markerObjects[editingIndex].setIcon(makeIcon(p));
-        }
-        closeEdit(); updateStats(); renderList(); showToast('Property updated.');
+        map.closePopup();
+        editingIndex = idx;
+        var p = allProperties[idx];
+        document.getElementById("editAddress").value = p.name;
+        document.getElementById("editUnit").value = p.unit || "";
+        document.getElementById("editRent").value = p.rent || "";
+        document.getElementById("editStatus").value = p.status || "";
+        document.getElementById("editAmenities").value = p.amenities || "";
+        document.getElementById("editModal").classList.add("open");
       }
 
-      // ── Utils ──
-      function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-      function escJs(s)   { return String(s).replace(/'/g,"\\'").replace(/\n/g,' '); }
+      function closeEdit() {
+        document.getElementById("editModal").classList.remove("open");
+        editingIndex = -1;
+      }
+
+      async function saveEdit() {
+        var p = allProperties[editingIndex];
+        var newAddr = document.getElementById("editAddress").value.trim();
+        var addrChanged = newAddr !== p.name;
+        p.name = newAddr;
+        p.unit = document.getElementById("editUnit").value.trim();
+        p.rent = document.getElementById("editRent").value.trim();
+        p.status = document.getElementById("editStatus").value.trim();
+        p.amenities = document.getElementById("editAmenities").value.trim();
+        if (addrChanged) {
+          if (markerObjects[editingIndex])
+            map.removeLayer(markerObjects[editingIndex]);
+          p.geo = await geocode(newAddr);
+          p.inCity = p.geo ? isInChicago(p.geo.lat, p.geo.lng) : false;
+          markerObjects[editingIndex] = addMarker(p);
+        } else if (markerObjects[editingIndex]) {
+          markerObjects[editingIndex].setIcon(makeIcon(p));
+          markerObjects[editingIndex].setPopupContent(makePopup(p));
+        }
+        closeEdit();
+        updateStats();
+        renderList();
+        showToast("Property updated.");
+      }
+
+      // ── Utilities ──
+      function escHtml(s) {
+        return String(s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+      function escJs(s) {
+        return String(s)
+          .replace(/\\/g, "\\\\")
+          .replace(/'/g, "\\'")
+          .replace(/\n/g, " ");
+      }
       function showToast(msg) {
-        const t=document.getElementById('toast');
-        t.textContent=msg; t.classList.add('show');
-        clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),4500);
+        var t = document.getElementById("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        clearTimeout(t._timer);
+        t._timer = setTimeout(function () {
+          t.classList.remove("show");
+        }, 4500);
       }
     </script>
   </body>
