@@ -945,44 +945,99 @@
         }
       });
 
+      function cleanCell(s) {
+        // Strip BOM, zero-width spaces, non-breaking spaces, and trim
+        return String(s)
+          .replace(/[\uFEFF\u200B\u00A0]/g, "")
+          .trim();
+      }
+
       function handleFile(file) {
         Papa.parse(file, {
           header: false,
           skipEmptyLines: false,
           complete: (result) => {
             const rows = result.data;
-            // Find header row containing "Property Name"
+
+            // Find header row — look for any cell that contains "property" and "name"
             let headerRowIdx = -1;
             for (let i = 0; i < rows.length; i++) {
-              if (
-                rows[i].some(
-                  (c) => String(c).trim().toLowerCase() === "property name",
-                )
-              ) {
-                headerRowIdx = i;
-                break;
+              for (let j = 0; j < rows[i].length; j++) {
+                const val = cleanCell(rows[i][j]).toLowerCase();
+                if (val.includes("property") && val.includes("name")) {
+                  headerRowIdx = i;
+                  break;
+                }
+              }
+              if (headerRowIdx !== -1) break;
+            }
+
+            // Fallback: look for any row with 8+ non-empty cells (likely the header)
+            if (headerRowIdx === -1) {
+              for (let i = 0; i < rows.length; i++) {
+                const filled = rows[i].filter(
+                  (c) => cleanCell(c).length > 0,
+                ).length;
+                if (filled >= 7) {
+                  headerRowIdx = i;
+                  break;
+                }
               }
             }
+
             if (headerRowIdx === -1) {
               showToast(
-                'Could not find the "Property Name" header. Make sure this is the IL Scattered Site export CSV.',
+                "Could not read the CSV structure. Please upload the file here in chat so we can inspect it.",
               );
               return;
             }
-            const headers = rows[headerRowIdx].map((h) => String(h).trim());
+
+            const headers = rows[headerRowIdx].map((h) => cleanCell(h));
             const dataRows = rows.slice(headerRowIdx + 1);
 
+            // Debug: log headers so user can report them
+            console.log("Detected headers:", headers);
+
             const colMap = {
-              propertyName: findCol(headers, ["property name"]),
+              propertyName: findCol(headers, [
+                "property name",
+                "propertyname",
+                "property",
+              ]),
               unit: findCol(headers, ["unit"]),
-              unitType: findCol(headers, ["unit type"]),
-              marketRent: findCol(headers, ["market rent"]),
-              rentReady: findCol(headers, ["rent ready"]),
-              bedBath: findCol(headers, ["bed/bath", "bed bath", "bedroom"]),
-              sqft: findCol(headers, ["sqft", "sq ft", "square"]),
-              unitStatus: findCol(headers, ["unit status", "status"]),
-              amenities: findCol(headers, ["unit amenities", "amenities"]),
+              unitType: findCol(headers, ["unit type", "unittype", "type"]),
+              marketRent: findCol(headers, [
+                "market rent",
+                "marketrent",
+                "rent",
+              ]),
+              rentReady: findCol(headers, ["rent ready", "rentready"]),
+              bedBath: findCol(headers, [
+                "bed/bath",
+                "bed bath",
+                "bedroom",
+                "beds",
+              ]),
+              sqft: findCol(headers, [
+                "sqft",
+                "sq ft",
+                "square feet",
+                "square",
+              ]),
+              unitStatus: findCol(headers, [
+                "unit status",
+                "unitstatus",
+                "status",
+              ]),
+              amenities: findCol(headers, [
+                "unit amenities",
+                "amenities",
+                "features",
+              ]),
             };
+
+            // If propertyName still not found, assume column 0
+            if (colMap.propertyName === -1) colMap.propertyName = 0;
 
             let currentZone = "";
             pendingRows = [];
@@ -1028,7 +1083,9 @@
 
       function findCol(headers, keywords) {
         for (let k of keywords) {
-          const idx = headers.findIndex((h) => h.toLowerCase().includes(k));
+          const idx = headers.findIndex((h) =>
+            cleanCell(h).toLowerCase().includes(k.toLowerCase()),
+          );
           if (idx !== -1) return idx;
         }
         return -1;
