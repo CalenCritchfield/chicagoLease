@@ -801,7 +801,6 @@
           </div>
         </div>
       </div>
-
       <div id="map"></div>
     </div>
 
@@ -937,14 +936,13 @@
         }
       });
 
-      // ── Clean cell value ──
+      // ── Utilities ──
       function cleanCell(val) {
         return String(val === null || val === undefined ? "" : val)
           .replace(/[\uFEFF\u200B\u00A0]/g, "")
           .trim();
       }
 
-      // ── Find column index ──
       function findCol(headers, keywords) {
         for (var k = 0; k < keywords.length; k++) {
           var kw = keywords[k].toLowerCase();
@@ -955,9 +953,33 @@
         return -1;
       }
 
-      // ── Parse raw rows (array of arrays) ──
+      function escHtml(s) {
+        return String(s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function escJs(s) {
+        return String(s)
+          .replace(/\\/g, "\\\\")
+          .replace(/'/g, "\\'")
+          .replace(/\n/g, " ");
+      }
+
+      function showToast(msg) {
+        var t = document.getElementById("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        clearTimeout(t._timer);
+        t._timer = setTimeout(function () {
+          t.classList.remove("show");
+        }, 4500);
+      }
+
+      // ── Parse rows ──
       function parseRows(rows, fileName) {
-        // Find header row — look for a cell containing "property" and "name"
         var headerRowIdx = -1;
         for (var i = 0; i < rows.length; i++) {
           for (var j = 0; j < rows[i].length; j++) {
@@ -969,7 +991,6 @@
           }
           if (headerRowIdx !== -1) break;
         }
-
         // Fallback: first row with 7+ filled cells
         if (headerRowIdx === -1) {
           for (var i = 0; i < rows.length; i++) {
@@ -982,7 +1003,6 @@
             }
           }
         }
-
         if (headerRowIdx === -1) {
           showToast(
             "Could not find column headers. Please check the file and try again.",
@@ -995,6 +1015,7 @@
         });
         var dataRows = rows.slice(headerRowIdx + 1);
 
+        // All columns read locally in browser — only Column A (address) is ever sent to Nominatim
         var colMap = {
           propertyName: findCol(headers, [
             "property name",
@@ -1019,7 +1040,6 @@
             "features",
           ]),
         };
-
         if (colMap.propertyName === -1) colMap.propertyName = 0;
 
         var currentZone = "";
@@ -1057,7 +1077,7 @@
             })
             .filter(Boolean),
         ).size;
-        var msg =
+        document.getElementById("fileLoadedMsg").textContent =
           "✅ " +
           fileName +
           " — " +
@@ -1065,7 +1085,6 @@
           " units, " +
           zones +
           " zones";
-        document.getElementById("fileLoadedMsg").textContent = msg;
         document.getElementById("fileLoadedMsg").style.display = "block";
         document.getElementById("mapBtn").style.display = "block";
         switchMode("csv", document.querySelectorAll(".mode-tab")[0]);
@@ -1078,7 +1097,7 @@
         );
       }
 
-      // ── Excel file handler ──
+      // ── File handlers ──
       function handleExcel(file) {
         var reader = new FileReader();
         reader.onload = function (e) {
@@ -1094,7 +1113,6 @@
         reader.readAsArrayBuffer(file);
       }
 
-      // ── CSV file handler ──
       function handleCSV(file) {
         Papa.parse(file, {
           header: false,
@@ -1108,8 +1126,32 @@
         });
       }
 
-      // ── Geocode ──
-      async function geocode(address) {
+      // ── Persistent cache ──
+      var CACHE_KEY = "chicagoPropertyCoords_v1";
+
+      function loadCache() {
+        try {
+          var raw = localStorage.getItem(CACHE_KEY);
+          return raw ? JSON.parse(raw) : {};
+        } catch (e) {
+          return {};
+        }
+      }
+
+      function saveCache(cache) {
+        try {
+          localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+        } catch (e) {}
+      }
+
+      function getCacheSize() {
+        return Object.keys(loadCache()).length;
+      }
+
+      // ── Geocode (cache-first, only calls Nominatim for new addresses) ──
+      async function geocode(address, cache) {
+        var key = address.trim().toLowerCase();
+        if (cache && cache.hasOwnProperty(key)) return cache[key];
         try {
           var q = /chicago/i.test(address)
             ? address
@@ -1120,13 +1162,18 @@
             { headers: { "Accept-Language": "en" } },
           );
           var data = await res.json();
-          if (data && data[0])
-            return {
-              lat: parseFloat(data[0].lat),
-              lng: parseFloat(data[0].lon),
-            };
-        } catch (e) {}
-        return null;
+          var geo =
+            data && data[0]
+              ? { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) }
+              : null;
+          if (cache) {
+            cache[key] = geo;
+            saveCache(cache);
+          }
+          return geo;
+        } catch (e) {
+          return null;
+        }
       }
 
       function isInChicago(lat, lng) {
@@ -1141,12 +1188,10 @@
           showToast("No data loaded. Drag your file onto the page first.");
           return;
         }
-
         var btn = document.getElementById("mapBtn");
         btn.disabled = true;
         btn.textContent = "⏳ Mapping…";
-        var pw = document.getElementById("progressWrap");
-        pw.classList.add("visible");
+        document.getElementById("progressWrap").classList.add("visible");
 
         // Keep manual props, remove CSV ones
         var manualProps = allProperties.filter(function (p) {
@@ -1169,26 +1214,30 @@
           markerObjects[i] = manualMrks[i];
         });
 
-        var addrCache = {};
+        var cache = loadCache();
+        var newLookups = 0;
 
         for (var i = 0; i < pendingRows.length; i++) {
           var row = pendingRows[i];
           var pct = Math.round((i / pendingRows.length) * 100);
+          var key = row.name.trim().toLowerCase();
+          var fromCache = cache.hasOwnProperty(key);
           document.getElementById("progressBar").style.width = pct + "%";
           document.getElementById("progressLabel").textContent =
-            i + 1 + " / " + pendingRows.length + " — " + row.name;
-
-          var geo;
-          if (addrCache.hasOwnProperty(row.name)) {
-            geo = addrCache[row.name];
-          } else {
-            geo = await geocode(row.name);
-            addrCache[row.name] = geo;
+            i +
+            1 +
+            " / " +
+            pendingRows.length +
+            (fromCache ? " ⚡ cached" : " 🌐 looking up") +
+            " — " +
+            row.name;
+          var geo = await geocode(row.name, cache);
+          if (!fromCache) {
+            newLookups++;
             await new Promise(function (r) {
               setTimeout(r, 350);
             });
           }
-
           var inCity = geo ? isInChicago(geo.lat, geo.lng) : false;
           var prop = Object.assign({}, row, {
             geo: geo,
@@ -1201,10 +1250,15 @@
         }
 
         document.getElementById("progressBar").style.width = "100%";
-        document.getElementById("progressLabel").textContent = "Done!";
+        document.getElementById("progressLabel").textContent =
+          "Done! (" +
+          newLookups +
+          " new, " +
+          (pendingRows.length - newLookups) +
+          " cached)";
         setTimeout(function () {
-          pw.classList.remove("visible");
-        }, 2000);
+          document.getElementById("progressWrap").classList.remove("visible");
+        }, 3000);
 
         updateStats();
         renderList();
@@ -1221,9 +1275,15 @@
         showToast(
           "Mapped " +
             chicagoCount +
-            " units in Chicago. " +
-            failCount +
-            " could not be geocoded.",
+            " in Chicago. " +
+            newLookups +
+            " new lookups, " +
+            (pendingRows.length - newLookups) +
+            " from cache." +
+            (failCount ? " " + failCount + " not found." : "") +
+            " Cache: " +
+            getCacheSize() +
+            " addresses stored.",
         );
       }
 
@@ -1237,7 +1297,8 @@
         var btn = document.getElementById("addBtn");
         btn.disabled = true;
         btn.textContent = "⏳ Looking up…";
-        var geo = await geocode(address);
+        var cache = loadCache();
+        var geo = await geocode(address, cache);
         if (!geo) {
           showToast("Could not find that address. Try including Chicago, IL.");
           btn.disabled = false;
@@ -1247,6 +1308,7 @@
         var inCity = isInChicago(geo.lat, geo.lng);
         var prop = {
           name: address,
+          zone: "Manually Added",
           unit: document.getElementById("addUnit").value.trim(),
           type: document.getElementById("addType").value.trim(),
           rent: document.getElementById("addRent").value.trim(),
@@ -1255,7 +1317,6 @@
           sqft: document.getElementById("addSqft").value.trim(),
           status: document.getElementById("addStatus").value.trim(),
           amenities: document.getElementById("addAmenities").value.trim(),
-          zone: "Manually Added",
           geo: geo,
           inCity: inCity,
           manual: true,
@@ -1374,7 +1435,7 @@
         showToast('Address pre-filled — add details and click "Add to Map"');
       }
 
-      // ── Add marker ──
+      // ── Markers ──
       function addMarker(prop) {
         if (!prop.geo) return null;
         var marker = L.marker([prop.geo.lat, prop.geo.lng], {
@@ -1631,7 +1692,7 @@
         showToast("Property removed.");
       }
 
-      // ── Edit ──
+      // ── Edit modal ──
       function openEdit(idx) {
         map.closePopup();
         editingIndex = idx;
@@ -1661,7 +1722,8 @@
         if (addrChanged) {
           if (markerObjects[editingIndex])
             map.removeLayer(markerObjects[editingIndex]);
-          p.geo = await geocode(newAddr);
+          var cache = loadCache();
+          p.geo = await geocode(newAddr, cache);
           p.inCity = p.geo ? isInChicago(p.geo.lat, p.geo.lng) : false;
           markerObjects[editingIndex] = addMarker(p);
         } else if (markerObjects[editingIndex]) {
@@ -1672,30 +1734,6 @@
         updateStats();
         renderList();
         showToast("Property updated.");
-      }
-
-      // ── Utilities ──
-      function escHtml(s) {
-        return String(s)
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;");
-      }
-      function escJs(s) {
-        return String(s)
-          .replace(/\\/g, "\\\\")
-          .replace(/'/g, "\\'")
-          .replace(/\n/g, " ");
-      }
-      function showToast(msg) {
-        var t = document.getElementById("toast");
-        t.textContent = msg;
-        t.classList.add("show");
-        clearTimeout(t._timer);
-        t._timer = setTimeout(function () {
-          t.classList.remove("show");
-        }, 4500);
       }
     </script>
   </body>
